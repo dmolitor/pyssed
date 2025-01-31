@@ -1,3 +1,2 @@
-# read version from installed package
-from importlib.metadata import version
-__version__ = version("pyssed")
+def hello() -> str:
+    return "Hello from pyssed!"
