@@ -1,3 +1,4 @@
+import numpy as np
 import pyssed.utils as utils
 import pytest
 
@@ -16,3 +17,11 @@ class TestShrinkage:
 
     def test_valid(self):
         assert utils.check_shrinkage_rate(t=100, delta_t=1/(100**(0.2499))) is None
+
+# Test that the confidence sequence calculation is correct
+def test_cs_radius():
+    truth = 0.5541954577819679
+    t = 10
+    eta = 0.8908509752892212
+    var1 = [0., 0., 0.5, 0.7, 1.2, 0.1, 0.1, 0.2, 0.1, 0.1]
+    assert np.isclose(utils.cs_radius(var=var1, t=t, t_star=t, alpha=0.05), truth, rtol=0.00001)
