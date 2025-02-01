@@ -1,0 +1,89 @@
+import numpy as np
+from typing import Any, Dict, List
+
+def ate(ite: List[float]) -> float:
+    """Unbiased ATE estimator. Sample mean of unbiased ITE estimates"""
+    return np.mean(ite).astype(float)
+
+def check_shrinkage_rate(t: int, delta_t: float):
+    """Checks the shrinkage rate delta_t defined in Liang and Bojinov"""
+    assert t <= 1 or delta_t > 1/(t**(1/4)), "Sequence is converging to 0 too quickly"
+
+def cs_radius(var: List[float], t: int, t_star: int, alpha: float = 0.05) -> float:
+    """
+    Confidence sequence radius
+    
+    Parameters:
+    - var   : An array-like of individual treatment effect variances (upper bounds)
+    - t     : The current time-step of the algorithm
+    - t_star: The time-step at which we want to optimize the CSs to be tightest
+    - alpha : The size of the statistical test
+
+    Return:
+    -------
+    The radius of the Confidence Sequence. Aka the value V such that
+    tau (ATE estimate) ± V is a valid alpha-level CS.
+    """
+    S = np.sum(var)
+    eta = np.sqrt((-2*np.log(alpha) + np.log(-2*np.log(alpha) + 1))/t_star)
+    rad = np.sqrt(
+        2*(S*(eta**2) + 1)/((t**2)*(eta**2))
+        * np.log(np.sqrt(S*(eta**2) + 1)/alpha)
+    )
+    return rad.astype(float)
+
+def ite(outcome: float, treatment: int, propensity: float) -> float:
+    """Unbiased individual treatment effect estimator"""
+    if treatment == 0:
+        ite = -outcome/propensity
+    else:
+        ite = outcome/propensity
+    return ite
+
+def last(x: List[Any]) -> Any:
+    """Returns the last element of a list. Returns None if empty list."""
+    if len(x) < 1:
+        return None
+    return x[len(x) - 1]
+
+def var(outcome: float, propensity: float) -> float:
+    """Upper bound for individual treatment effect variance"""
+    var_ub = (outcome**2)/(propensity**2)
+    return var_ub
+
+def weighted_probs(bandit_probs: Dict[int, float], weights: Dict[int, float]) -> Dict[int, float]:
+    """
+    Update bandit probabilities based on weights, redistributing lost mass.
+
+    Parameters:
+    - bandit_probs (Dict[int, float]): Original probabilities (must sum to 1).
+    - weights (Dict[int, float]): Importance weights (values in [0, 1]).
+
+    Returns:
+    Dict[int, float]: Updated bandit probabilities.
+    """
+    assert np.isclose(sum(bandit_probs.values()), 1.0, rtol=0.01), "Bandit probabilities should sum to 1"
+    updated_probs = {
+        arm: weights[arm] * bandit_probs[arm]
+        for arm in bandit_probs
+    }
+    losses = {
+        arm: bandit_probs[arm] * (1 - weights[arm])
+        for arm in bandit_probs
+    }
+    total_loss = sum(losses.values())
+    weight_sum = sum(weights.values())
+    relative_weights = {
+        arm: (weights[arm]/weight_sum)
+        for arm in weights
+    }
+    redistributed_loss = {
+        arm: total_loss * relative_weights[arm]
+        for arm in weights
+    }
+    updated_bandit_probs = {
+        arm: updated_probs[arm] + redistributed_loss[arm]
+        for arm in bandit_probs
+    }
+    assert np.isclose(sum(updated_bandit_probs.values()), 1.0, rtol=0.01), "Updated bandit probabilities should sum to 1"
+    return updated_bandit_probs
