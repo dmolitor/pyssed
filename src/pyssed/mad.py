@@ -9,8 +9,7 @@ from utils import (
     cs_radius,
     ite,
     last,
-    var,
-    weighted_probs
+    var
 )
 
 generator = np.random.default_rng(seed=123)
