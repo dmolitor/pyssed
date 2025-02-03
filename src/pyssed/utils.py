@@ -1,8 +1,20 @@
 import numpy as np
-from typing import Any, Dict, List
+from typing import Any, List
 
 def ate(ite: List[float]) -> float:
-    """Unbiased ATE estimator. Sample mean of unbiased ITE estimates"""
+    """Unbiased ATE estimator. 
+    
+    The sample mean of an array of unbiased ITE estimates
+    
+    Parameters
+    ----------
+    ite : list of float
+
+    Returns
+    -------
+    float
+        Average Treatment Effect estimate.
+    """
     return np.mean(ite).astype(float)
 
 def check_shrinkage_rate(t: int, delta_t: float):
@@ -13,16 +25,22 @@ def cs_radius(var: List[float], t: int, t_star: int, alpha: float = 0.05) -> flo
     """
     Confidence sequence radius
     
-    Parameters:
-    - var   : An array-like of individual treatment effect variances (upper bounds)
-    - t     : The current time-step of the algorithm
-    - t_star: The time-step at which we want to optimize the CSs to be tightest
-    - alpha : The size of the statistical test
+    Parameters
+    ----------
+    var : list of float
+        An array-like of individual treatment effect variances (upper bounds).
+    t : int
+        The current time-step of the algorithm.
+    t_star: int
+        The time-step at which we want to optimize the CSs to be tightest.
+    alpha : float
+        The size of the statistical test.
 
-    Return:
+    Returns
     -------
-    The radius of the Confidence Sequence. Aka the value V such that
-    tau (ATE estimate) ± V is a valid alpha-level CS.
+    float
+        The radius of the Confidence Sequence. Aka the value V such that
+        tau (ATE estimate) ± V is a valid alpha-level CS.
     """
     S = np.sum(var)
     eta = np.sqrt((-2*np.log(alpha) + np.log(-2*np.log(alpha) + 1))/t_star)

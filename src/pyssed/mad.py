@@ -1,10 +1,10 @@
-from bandit import Bandit
+from pyssed.bandit import Bandit
 import numpy as np
 from tqdm import tqdm
 from typing import Callable
 import pandas as pd
 import plotnine as pn
-from utils import (
+from pyssed.utils import (
     check_shrinkage_rate,
     cs_radius,
     ite,
@@ -16,20 +16,27 @@ generator = np.random.default_rng(seed=123)
 
 class MAD:
     """
-    A class implementing Liang and Bojinov's Mixture-Adaptive Design (MAD)
-    
-    Parameters:
-    - alpha : The size of the statistical test (testing for non-zero treatment effects)
-    - bandit: An object of class Bandit. This object must implement several crucial
-        methods/attributes. For more details on how to create a custom Bandit
-        object, see the documentation of the Bandit class.
-    - delta : A function that generates the real-valued sequence delta_t in Liang
+    A class implementing Liang and Bojinov's Mixture-Adaptive Design (MAD).
+
+    Parameters
+    ----------
+    bandit: pyssed.Bandit
+        The underlying bandit algorithm on which the MAD design operates.
+        This bandit class must implement several crucial methods/attributes.
+        For more details on how to create a custom Bandit object, see the
+        documentation of the `pyssed.Bandit` class.
+    alpha : float
+        The size of the statistical test (testing for non-zero ATEs).
+    delta : Callable[[int], float]
+        A function that generates the real-valued sequence delta_t in Liang
         and Bojinov (Definition 4 - Mixture Adaptive Design). This sequence
-        should converge to 0 slower than 1/t^(1/4) where t denotes the time
-        frame in {0, ... n}. This function should intake an integer (t) and
-        output a float (the corresponding delta_t)
-    - t_star: The time-step at which we want to optimize the CSs to be tightest.
-        E.g. Liang and Bojinov set this to the max horizon of their experiment
+        determines the amount of random exploration that is infused into
+        the bandit design, and it should converge to 0 slower than 1/t^(1/4)
+        where t denotes the time step in {0, ... n}. This function should
+        intake an integer (t) and output a float (the corresponding delta_t).
+    t_star : int
+        The time-step at which we want to optimize the CSs to be tightest.
+        E.g. Liang and Bojinov set this to the max horizon of their experiment.
     """
     def __init__(self, bandit: Bandit, alpha: float, delta: Callable[[int], float], t_star: int):
         self._alpha = alpha
@@ -37,12 +44,10 @@ class MAD:
         self._bandit = bandit
         self._cs_radius = []
         self._cs_width = []
-        self._cs_width_benchmark = []
         self._delta = delta
         self._ite = []
         self._ite_var = []
         self._n = []
-        self._stat_sig_counter = []
         self._t_star = t_star
         for _ in range(bandit.k()):
             self._ite.append([])
@@ -50,25 +55,59 @@ class MAD:
             self._ate.append([])
             self._cs_radius.append([])
             self._cs_width.append(0)
-            self._cs_width_benchmark.append(0)
             self._n.append([0])
-            self._stat_sig_counter.append(0)
     
-    def fit(self, eliminate_arms: bool = True, cs_precision: float = 0.25) -> None:
+    def estimates(self) -> pd.DataFrame:
         """
-        Fit the full MAD algorithm for the full time horizon or until there are
-        no treatment arms remaining
+        Extract estimated ATEs and confidence sequences.
+
+        Returns
+        -------
+        pandas.DataFrame
+            A dataframe of ATE estimates and corresponding CS lower and
+            upper bounds.
         """
-        for _ in tqdm(range(self._t_star), total = self._t_star):
-            self.pull(eliminate_arms=eliminate_arms, cs_precision=cs_precision)
-            # If all treatment arms have been eliminated, end the algorithm
-            if self._bandit.k() <= 1:
-                print("Stopping early!")
-                break
+        results = {"arm": [], "ate": [], "lb": [], "ub": []}
+        for arm in range(len(self._ate)):
+            if arm == self._bandit.control():
+                continue
+            ate = last(self._ate[arm])
+            radius = last(self._cs_radius[arm])
+            lb = ate - radius
+            ub = ate + radius
+            results["arm"].append(arm)
+            results["ate"].append(ate)
+            results["lb"].append(lb)
+            results["ub"].append(ub)
+        return pd.DataFrame(results)
+
+    def fit(self, verbose: bool = True) -> None:
+        """
+        Fit the MAD algorithm for the full time horizon.
+
+        Parameters
+        ----------
+        verbose : bool
+            Whether to print progress of the algorithm
+        
+        Returns
+        -------
+        None
+        """
+        if verbose:
+            fit_seq = tqdm(range(self._t_star), total = self._t_star)
+        else:
+            fit_seq = range(self._t_star)
+        for _ in fit_seq:
+            self.pull()
     
-    def plot(self) -> pn.ggplot:
+    def plot_ate(self) -> pn.ggplot:
         """
-        Plot the ATE and CS paths for each arm of the experiment
+        Plot the ATE and CS paths for each arm of the experiment.
+
+        Returns
+        -------
+        plotnine.ggplot
         """
         arms = list(range(len(self._ate)))
         arms.remove(self._bandit.control())
@@ -108,7 +147,6 @@ class MAD:
             + pn.geom_ribbon(alpha=0.05)
             + pn.facet_wrap(
                 "~ arm",
-                ncol=2,
                 labeller=pn.labeller(arm=lambda v: f"Arm {v}")
             )
             + pn.theme_538()
@@ -117,8 +155,37 @@ class MAD:
         )
         return plt
     
-    def plot_sample(self) -> pn.ggplot:
-        """Plot sample assignment to arms across time"""
+    def plot_n(self) -> pn.ggplot:
+        """
+        Plot the total N assigned to each arm.
+        
+        Returns
+        -------
+        plotnine.ggplot
+        """
+        arm_n = pd.concat([
+            pd.DataFrame({
+                "arm": [arm],
+                "n": last(self._n[arm])
+            }) for arm in range(len(self._ate))
+        ])
+        plt = (
+            pn.ggplot(data=arm_n, mapping=pn.aes(x="factor(arm)", y="n"))
+            + pn.geom_bar(stat="identity")
+            + pn.labs(x="Arm", y="N")
+            + pn.theme_538()
+            + pn.theme(legend_position="none")
+        )
+        return plt
+    
+    def plot_sample_assignment(self) -> pn.ggplot:
+        """
+        Plot sample assignment to arms across time
+        
+        Returns
+        -------
+        plotnine.ggplot
+        """
         sample_assignment = pd.concat([
             pd.DataFrame({
                 "arm": [arm]*len(self._n[arm]),
@@ -145,9 +212,13 @@ class MAD:
         )
         return plt
 
-    def pull(self, eliminate_arms: bool = True, cs_precision: float = 0.25) -> None:
+    def pull(self) -> None:
         """
-        Perform one full iteration of the MAD algorithm
+        Perform one full iteration of the MAD algorithm.
+
+        Returns
+        -------
+        None
         """
         # Bandit parameters
         control = self._bandit.control()
@@ -202,33 +273,16 @@ class MAD:
             self._ate[arm].append(avg_treat_effect)
             self._cs_radius[arm].append(conf_seq_radius)
             self._cs_width[arm] = 2.0*conf_seq_radius
-            if eliminate_arms and arm != control:
-                # If the arm's CS excludes 0, drop the arm from the experiment
-                if np.isnan(avg_treat_effect) or np.isinf(conf_seq_radius):
-                    continue
-                stat_sig = np.logical_or(
-                    0 <= avg_treat_effect - conf_seq_radius,
-                    0 >= avg_treat_effect + conf_seq_radius
-                )
-                if stat_sig:
-                    # If the CS is statistically significant for the first time
-                    # we will attempt to increase precision by decreasing the
-                    # interval width by X% relative to it's current width
-                    self._stat_sig_counter[arm] += 1
-                    if self._stat_sig_counter[arm] == 1:
-                        self._cs_width_benchmark[arm] = self._cs_width[arm]
-                    # Now, eliminate the arm iff it is <= 90% of it's width when
-                    # initially marked as statistically significant
-                    threshold = (1-cs_precision)*self._cs_width_benchmark[arm]
-                    if self._cs_width[arm] <= threshold:
-                        self._bandit.eliminate_arm(arm)
     
-    def summary(self, estimates: bool = False) -> None | pd.DataFrame:
+    def summary(self) -> None:
         """
-        Print a summary of treatment effect estimates and confidence bands
+        Print a summary of ATEs and confidence bands.
+
+        Returns
+        -------
+        None
         """
         print("Treatment effect estimates:")
-        results = {"arm": [], "ate": [], "lb": [], "ub": []}
         for arm in range(len(self._ate)):
             if arm == self._bandit.control():
                 continue
@@ -236,10 +290,4 @@ class MAD:
             radius = last(self._cs_radius[arm])
             lb = ate - radius
             ub = ate + radius
-            results["arm"].append(arm)
-            results["ate"].append(ate)
-            results["lb"].append(lb)
-            results["ub"].append(ub)
             print(f"- Arm {arm}: {round(ate, 3)} ({round(lb, 5)}, {round(ub, 5)})")
-        if estimates:
-            return pd.DataFrame(results)
