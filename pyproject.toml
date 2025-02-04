@@ -29,3 +29,8 @@ dev = [
 line-length = 88
 target-version = ['py310']
 include = '\.pyi?$'
+
+#[[tool.uv.index]]
+#name = "testpypi"
+#url = "https://test.pypi.org/simple/"
+#publish-url = "https://test.pypi.org/legacy/"
