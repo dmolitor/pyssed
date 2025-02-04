@@ -8,8 +8,6 @@
 
 <!-- badges: end -->
 
-    <function __main__.<lambda>(df)>
-
 The goal of pyssed is to implement the Mixture Adaptive Design (MAD), as
 proposed by [Liang and Bojinov](https://arxiv.org/abs/2311.05794). MAD
 is an experimental design for multi-armed bandit algorithms that enables
@@ -198,9 +196,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.062 (-0.09388, 0.21707)
-    - Arm 2: 0.138 (0.022, 0.25345)
-    - Arm 3: 0.148 (0.04169, 0.25529)
+    - Arm 1: 0.069 (-0.08093, 0.21822)
+    - Arm 2: 0.192 (0.07267, 0.31071)
+    - Arm 3: 0.202 (0.09938, 0.30392)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -210,9 +208,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.061593 | -0.093882 | 0.217068 |
-| 1   | 2   | 0.137723 | 0.022000  | 0.253445 |
-| 2   | 3   | 0.148489 | 0.041692  | 0.255286 |
+| 0   | 1   | 0.068643 | -0.080933 | 0.218219 |
+| 1   | 2   | 0.191686 | 0.072666  | 0.310707 |
+| 2   | 3   | 0.201651 | 0.099383  | 0.303918 |
 
 <p>3 rows × 4 columns</p>
 
@@ -235,8 +233,8 @@ the experiment:
 )
 ```
 
-<img src="README_files/figure-commonmark/cell-9-output-1.png"
-width="336" height="240" />
+<img src="README_files/figure-commonmark/cell-10-output-1.png"
+width="2100" height="1500" />
 
 We can see that the ATE point estimates converge towards the ground
 truth and that the confidence sequences provide good coverage!
@@ -248,8 +246,8 @@ time:
 experiment.plot_sample_assignment()
 ```
 
-<img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="336" height="240" />
+<img src="README_files/figure-commonmark/cell-11-output-1.png"
+width="2100" height="1500" />
 
 We can see that, as a result of the underlying TS algorithm, the
 majority of the sample is assigned to the optimal arm Arm 3 and the
@@ -263,8 +261,8 @@ experiment arms:
 experiment.plot_n()
 ```
 
-<img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="336" height="240" />
+<img src="README_files/figure-commonmark/cell-12-output-1.png"
+width="2100" height="1500" />
 
 ### Equivalence to a completely randomized design
 
@@ -298,8 +296,8 @@ ground truth:
 )
 ```
 
-<img src="README_files/figure-commonmark/cell-13-output-1.png"
-width="336" height="240" />
+<img src="README_files/figure-commonmark/cell-14-output-1.png"
+width="2100" height="1500" />
 
 And we can verify completely random assignment:
 
@@ -307,5 +305,5 @@ And we can verify completely random assignment:
 exp_bernoulli.plot_n()
 ```
 
-<img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="336" height="240" />
+<img src="README_files/figure-commonmark/cell-15-output-1.png"
+width="2100" height="1500" />

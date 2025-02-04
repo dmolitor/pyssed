@@ -1,11 +1,7 @@
 ---
 title: pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
-format:
-  gfm:
-    fig-height: 600
-    fig-width: 800
-    # fig-dpi: 300
-jupyter: python3
+format: gfm
+engine: jupyter
 ---
 
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
@@ -17,6 +13,7 @@ jupyter: python3
 #| echo: false
 #| warning: false
 #| error: false
+#| output: false
 import pandas as pd
 
 from IPython import get_ipython
@@ -71,6 +68,13 @@ from pyssed import Bandit, MAD
 from typing import Callable, Dict
 
 generator = np.random.default_rng(seed=123)
+```
+
+```{python}
+#| echo: false
+#| output: false
+pn.options.figure_size = (7, 5)
+pn.options.dpi = 300
 ```
 
 ### Treatment arm outcomes
