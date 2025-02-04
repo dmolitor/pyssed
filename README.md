@@ -1,5 +1,3 @@
-# Treatment arm outcomes
-
 
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
 
@@ -54,6 +52,8 @@ from typing import Callable, Dict
 
 generator = np.random.default_rng(seed=123)
 ```
+
+### Treatment arm outcomes
 
 We’ll begin by defining a function that generates outcomes (rewards) for
 each of our experiment arms:
