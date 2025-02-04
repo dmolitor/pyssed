@@ -196,9 +196,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.069 (-0.08093, 0.21822)
-    - Arm 2: 0.192 (0.07267, 0.31071)
-    - Arm 3: 0.202 (0.09938, 0.30392)
+    - Arm 1: 0.1 (-0.04915, 0.24942)
+    - Arm 2: 0.18 (0.04097, 0.31822)
+    - Arm 3: 0.175 (0.06999, 0.27927)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -208,9 +208,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.068643 | -0.080933 | 0.218219 |
-| 1   | 2   | 0.191686 | 0.072666  | 0.310707 |
-| 2   | 3   | 0.201651 | 0.099383  | 0.303918 |
+| 0   | 1   | 0.100133 | -0.049149 | 0.249415 |
+| 1   | 2   | 0.179595 | 0.040967  | 0.318223 |
+| 2   | 3   | 0.174630 | 0.069991  | 0.279268 |
 
 <p>3 rows × 4 columns</p>
 
@@ -234,7 +234,7 @@ the experiment:
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="2100" height="1500" />
+width="1500" height="900" />
 
 We can see that the ATE point estimates converge towards the ground
 truth and that the confidence sequences provide good coverage!
@@ -247,7 +247,7 @@ experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="2100" height="1500" />
+width="1500" height="900" />
 
 We can see that, as a result of the underlying TS algorithm, the
 majority of the sample is assigned to the optimal arm Arm 3 and the
@@ -262,7 +262,7 @@ experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="2100" height="1500" />
+width="1500" height="900" />
 
 ### Equivalence to a completely randomized design
 
@@ -297,7 +297,7 @@ ground truth:
 ```
 
 <img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="2100" height="1500" />
+width="1500" height="900" />
 
 And we can verify completely random assignment:
 
@@ -306,4 +306,4 @@ exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-15-output-1.png"
-width="2100" height="1500" />
+width="1500" height="900" />

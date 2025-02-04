@@ -73,7 +73,7 @@ generator = np.random.default_rng(seed=123)
 ```{python}
 #| echo: false
 #| output: false
-pn.options.figure_size = (7, 5)
+pn.options.figure_size = (5, 3)
 pn.options.dpi = 300
 ```
 
