@@ -3,8 +3,6 @@ title: pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' ali
 format:
   gfm:
     preview-mode: raw
-    fig-width: 6
-    fig-height: 4
     fig-dpi: 300
 jupyter: python3
 execute:
