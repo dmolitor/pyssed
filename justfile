@@ -12,6 +12,7 @@ default:
 # Format with Black
 black: check-uv
   uv run black {{justfile_directory()}}/src
+  uv run black {{justfile_directory()}}/tests
 
 # Check uv is installed
 check-uv:
