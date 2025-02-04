@@ -196,9 +196,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.075 (-0.07111, 0.22025)
-    - Arm 2: 0.185 (0.06555, 0.30518)
-    - Arm 3: 0.228 (0.12891, 0.32712)
+    - Arm 1: 0.137 (-0.01768, 0.29198)
+    - Arm 2: 0.201 (0.07178, 0.33028)
+    - Arm 3: 0.195 (0.09283, 0.29748)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -208,9 +208,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.074572 | -0.071110 | 0.220253 |
-| 1   | 2   | 0.185364 | 0.065546  | 0.305183 |
-| 2   | 3   | 0.228017 | 0.128913  | 0.327121 |
+| 0   | 1   | 0.137150 | -0.017681 | 0.291982 |
+| 1   | 2   | 0.201030 | 0.071783  | 0.330276 |
+| 2   | 3   | 0.195159 | 0.092833  | 0.297484 |
 
 <p>3 rows × 4 columns</p>
 
@@ -234,7 +234,7 @@ the experiment:
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="1000" height="400" />
+width="1200" height="400" />
 
 We can see that the ATE point estimates converge towards the ground
 truth and that the confidence sequences provide good coverage!
@@ -247,7 +247,7 @@ experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="1000" height="400" />
+width="1200" height="400" />
 
 We can see that, as a result of the underlying TS algorithm, the
 majority of the sample is assigned to the optimal arm Arm 3 and the
@@ -262,7 +262,7 @@ experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="1000" height="400" />
+width="1200" height="400" />
 
 ### Equivalence to a completely randomized design
 
@@ -297,7 +297,7 @@ ground truth:
 ```
 
 <img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="1000" height="400" />
+width="1200" height="400" />
 
 And we can verify completely random assignment:
 
@@ -306,4 +306,4 @@ exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-15-output-1.png"
-width="1000" height="400" />
+width="1200" height="400" />
