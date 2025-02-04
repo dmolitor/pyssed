@@ -1,11 +1,17 @@
 ---
-format: gfm
+title: pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
+format:
+  gfm:
+    preview-mode: raw
+    fig-width: 8
+    fig-height: 6
+    fig-dpi: 300
 jupyter: python3
+execute:
+    keep-ipynb: false
 ---
 
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
-
-# pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
 
 <!-- badges: start -->
 <!-- badges: end -->

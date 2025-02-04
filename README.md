@@ -1,9 +1,11 @@
+# pyssed
+<a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
+
 
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
 
-# pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
-
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 The goal of pyssed is to implement the Mixture Adaptive Design (MAD), as
@@ -194,9 +196,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.086 (-0.06279, 0.23573)
-    - Arm 2: 0.159 (0.04088, 0.27697)
-    - Arm 3: 0.196 (0.09164, 0.30027)
+    - Arm 1: 0.077 (-0.07383, 0.22743)
+    - Arm 2: 0.189 (0.07348, 0.30407)
+    - Arm 3: 0.194 (0.09201, 0.29695)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -219,9 +221,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.086470 | -0.062790 | 0.235730 |
-| 1   | 2   | 0.158921 | 0.040877  | 0.276966 |
-| 2   | 3   | 0.195954 | 0.091636  | 0.300273 |
+| 0   | 1   | 0.076802 | -0.073825 | 0.227429 |
+| 1   | 2   | 0.188778 | 0.073482  | 0.304074 |
+| 2   | 3   | 0.194477 | 0.092005  | 0.296948 |
 
 </div>
 
@@ -245,7 +247,7 @@ the experiment:
 ```
 
 <img src="README_files/figure-commonmark/cell-8-output-1.png"
-width="336" height="240" />
+width="1200" height="900" />
 
 We can see that the ATE point estimates converge towards the ground
 truth and that the confidence sequences provide good coverage!
@@ -258,7 +260,7 @@ experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-9-output-1.png"
-width="336" height="240" />
+width="1200" height="900" />
 
 We can see that, as a result of the underlying TS algorithm, the
 majority of the sample is assigned to the optimal arm Arm 3 and the
@@ -273,7 +275,7 @@ experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="336" height="240" />
+width="1200" height="900" />
 
 ### Equivalence to a completely randomized design
 
@@ -308,7 +310,7 @@ ground truth:
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="336" height="240" />
+width="1200" height="900" />
 
 And we can verify completely random assignment:
 
@@ -317,4 +319,4 @@ exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-13-output-1.png"
-width="336" height="240" />
+width="1200" height="900" />
