@@ -1,9 +1,6 @@
 ---
 title: pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
-format:
-  gfm:
-    preview-mode: raw
-    fig-dpi: 300
+format: gfm
 jupyter: python3
 execute:
     keep-ipynb: false
@@ -218,6 +215,7 @@ experiment.estimates()
 We can quickly visualize the ATE estimates and the corresponding confidence
 sequences for each of the treatment arms over the course of the experiment:
 ```{python}
+#| layout: [[100]]
 (
     experiment.plot_ate()
     + pn.coord_cartesian(ylim=(-.5, 1.0))
@@ -235,6 +233,7 @@ that the confidence sequences provide good coverage!
 
 We may also want to see the algorithms sample assignment strategy over time:
 ```{python}
+#| layout: [[100]]
 experiment.plot_sample_assignment()
 ```
 
@@ -244,6 +243,7 @@ a small amount of random exploration in Arms 0, 1, and 2.
 
 Similarly, we can plot the total sample assignment to each of the experiment arms:
 ```{python}
+#| layout: [[100]]
 experiment.plot_n()
 ```
 
@@ -264,6 +264,7 @@ exp_bernoulli.fit(verbose=False)
 
 As before we can plot the convergence of the estimated ATEs to the ground truth:
 ```{python}
+#| layout: [[100]]
 (
     exp_bernoulli.plot_ate()
     + pn.coord_cartesian(ylim=(-.1, 0.6))
@@ -278,5 +279,6 @@ As before we can plot the convergence of the estimated ATEs to the ground truth:
 
 And we can verify completely random assignment:
 ```{python}
+#| layout: [[100]]
 exp_bernoulli.plot_n()
 ```

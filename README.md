@@ -8,6 +8,8 @@
 
 <!-- badges: end -->
 
+    <function __main__.<lambda>(df)>
+
 The goal of pyssed is to implement the Mixture Adaptive Design (MAD), as
 proposed by [Liang and Bojinov](https://arxiv.org/abs/2311.05794). MAD
 is an experimental design for multi-armed bandit algorithms that enables
@@ -196,9 +198,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.081 (-0.07153, 0.23418)
-    - Arm 2: 0.161 (0.05389, 0.26789)
-    - Arm 3: 0.175 (0.06846, 0.28179)
+    - Arm 1: 0.108 (-0.04596, 0.26118)
+    - Arm 2: 0.167 (0.06042, 0.2733)
+    - Arm 3: 0.208 (0.10489, 0.31147)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -208,9 +210,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.081325 | -0.071534 | 0.234184 |
-| 1   | 2   | 0.160890 | 0.053886  | 0.267894 |
-| 2   | 3   | 0.175125 | 0.068459  | 0.281791 |
+| 0   | 1   | 0.107610 | -0.045961 | 0.261180 |
+| 1   | 2   | 0.166859 | 0.060422  | 0.273296 |
+| 2   | 3   | 0.208181 | 0.104889  | 0.311472 |
 
 <p>3 rows × 4 columns</p>
 
