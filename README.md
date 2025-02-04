@@ -196,9 +196,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.102 (-0.05095, 0.25524)
-    - Arm 2: 0.145 (0.01806, 0.27179)
-    - Arm 3: 0.201 (0.09852, 0.30276)
+    - Arm 1: 0.096 (-0.05329, 0.24557)
+    - Arm 2: 0.208 (0.09394, 0.32163)
+    - Arm 3: 0.216 (0.11479, 0.31622)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -208,9 +208,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.102148 | -0.050949 | 0.255244 |
-| 1   | 2   | 0.144926 | 0.018058  | 0.271793 |
-| 2   | 3   | 0.200639 | 0.098519  | 0.302759 |
+| 0   | 1   | 0.096141 | -0.053288 | 0.245570 |
+| 1   | 2   | 0.207787 | 0.093944  | 0.321630 |
+| 2   | 3   | 0.215502 | 0.114789  | 0.316216 |
 
 <p>3 rows × 4 columns</p>
 
@@ -234,7 +234,7 @@ the experiment:
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="600" height="300" />
+width="1000" height="500" />
 
 We can see that the ATE point estimates converge towards the ground
 truth and that the confidence sequences provide good coverage!
@@ -247,7 +247,7 @@ experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="600" height="300" />
+width="1000" height="500" />
 
 We can see that, as a result of the underlying TS algorithm, the
 majority of the sample is assigned to the optimal arm Arm 3 and the
@@ -262,7 +262,7 @@ experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="600" height="300" />
+width="1000" height="500" />
 
 ### Equivalence to a completely randomized design
 
@@ -297,7 +297,7 @@ ground truth:
 ```
 
 <img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="600" height="300" />
+width="1000" height="500" />
 
 And we can verify completely random assignment:
 
@@ -306,4 +306,4 @@ exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-15-output-1.png"
-width="600" height="300" />
+width="1000" height="500" />

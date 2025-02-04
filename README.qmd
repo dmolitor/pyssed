@@ -73,7 +73,7 @@ generator = np.random.default_rng(seed=123)
 ```{python}
 #| echo: false
 #| output: false
-pn.options.dpi = 300
+pn.options.dpi = 500
 ```
 
 ### Treatment arm outcomes
