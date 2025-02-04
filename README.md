@@ -196,9 +196,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.077 (-0.07383, 0.22743)
-    - Arm 2: 0.189 (0.07348, 0.30407)
-    - Arm 3: 0.194 (0.09201, 0.29695)
+    - Arm 1: 0.043 (-0.11134, 0.19673)
+    - Arm 2: 0.132 (0.01046, 0.25385)
+    - Arm 3: 0.155 (0.04762, 0.26278)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -206,26 +206,13 @@ We can also extract this summary into a pandas DataFrame:
 experiment.estimates()
 ```
 
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-&#10;    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-&#10;    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.076802 | -0.073825 | 0.227429 |
-| 1   | 2   | 0.188778 | 0.073482  | 0.304074 |
-| 2   | 3   | 0.194477 | 0.092005  | 0.296948 |
+| 0   | 1   | 0.042697 | -0.111336 | 0.196730 |
+| 1   | 2   | 0.132155 | 0.010458  | 0.253851 |
+| 2   | 3   | 0.155203 | 0.047622  | 0.262784 |
 
-</div>
+<p>3 rows × 4 columns</p>
 
 ### Plotting results
 
@@ -246,8 +233,8 @@ the experiment:
 )
 ```
 
-<img src="README_files/figure-commonmark/cell-8-output-1.png"
-width="1200" height="900" />
+<img src="README_files/figure-commonmark/cell-9-output-1.png"
+width="900" height="600" />
 
 We can see that the ATE point estimates converge towards the ground
 truth and that the confidence sequences provide good coverage!
@@ -259,8 +246,8 @@ time:
 experiment.plot_sample_assignment()
 ```
 
-<img src="README_files/figure-commonmark/cell-9-output-1.png"
-width="1200" height="900" />
+<img src="README_files/figure-commonmark/cell-10-output-1.png"
+width="900" height="600" />
 
 We can see that, as a result of the underlying TS algorithm, the
 majority of the sample is assigned to the optimal arm Arm 3 and the
@@ -274,8 +261,8 @@ experiment arms:
 experiment.plot_n()
 ```
 
-<img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="1200" height="900" />
+<img src="README_files/figure-commonmark/cell-11-output-1.png"
+width="900" height="600" />
 
 ### Equivalence to a completely randomized design
 
@@ -309,8 +296,8 @@ ground truth:
 )
 ```
 
-<img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="1200" height="900" />
+<img src="README_files/figure-commonmark/cell-13-output-1.png"
+width="900" height="600" />
 
 And we can verify completely random assignment:
 
@@ -318,5 +305,5 @@ And we can verify completely random assignment:
 exp_bernoulli.plot_n()
 ```
 
-<img src="README_files/figure-commonmark/cell-13-output-1.png"
-width="1200" height="900" />
+<img src="README_files/figure-commonmark/cell-14-output-1.png"
+width="900" height="600" />

@@ -3,8 +3,8 @@ title: pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' ali
 format:
   gfm:
     preview-mode: raw
-    fig-width: 8
-    fig-height: 6
+    fig-width: 6
+    fig-height: 4
     fig-dpi: 300
 jupyter: python3
 execute:
@@ -15,6 +15,22 @@ execute:
 
 <!-- badges: start -->
 <!-- badges: end -->
+
+```{python}
+#| echo: false
+#| warning: false
+#| error: false
+import pandas as pd
+
+from IPython import get_ipython
+# special ipython function to get the html formatter
+html_formatter = get_ipython().display_formatter.formatters['text/html']
+
+html_formatter.for_type(
+    pd.DataFrame,
+    lambda df: df.to_html(max_rows = pd.get_option("display.max_rows"), show_dimensions = True)
+)
+```
 
 The goal of pyssed is to implement the Mixture Adaptive Design (MAD), as
 proposed by [Liang and Bojinov](https://arxiv.org/abs/2311.05794).
