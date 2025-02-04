@@ -20,6 +20,12 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "black>=24.1.0",
     "ipykernel>=6.29.5",
     "pytest>=8.0.0",
 ]
+
+[tool.black]
+line-length = 88
+target-version = ['py310']
+include = '\.pyi?$'

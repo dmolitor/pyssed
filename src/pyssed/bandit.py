@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Dict
 
+
 class Bandit(ABC):
     """
     An abstract class for Bandit algorithms used in the MAD algorithm. Each
@@ -23,6 +24,7 @@ class Bandit(ABC):
     -----
     See the detailed method documentation for in-depth explanation.
     """
+
     @abstractmethod
     def control(self) -> int:
         """Get the index of the bandit control arm.
@@ -34,15 +36,15 @@ class Bandit(ABC):
             bandit is a 3-arm bandit with the first arm being the control arm,
             this should return the value 0.
         """
-    
+
     @abstractmethod
     def k(self) -> int:
         """Get the number of bandit arms.
-        
+
         int
             The number of arms in the bandit.
         """
-    
+
     @abstractmethod
     def probabilities(self) -> Dict[int, float]:
         """Calculate bandit arm assignment probabilities.
@@ -60,20 +62,20 @@ class Bandit(ABC):
     @abstractmethod
     def reward(self, arm: int) -> float:
         """Calculate the reward for a selected bandit arm.
-        
+
         Returns the reward for a selected arm.
-        
+
         Parameters
         ----------
         arm : int
             The index of the selected bandit arm.
-        
+
         Returns
         -------
         float
             The resulting reward.
         """
-    
+
     @abstractmethod
     def t(self) -> int:
         """Get the current time step of the bandit.
