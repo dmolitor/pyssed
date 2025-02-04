@@ -22,7 +22,10 @@ build-backend = "hatchling.build"
 dev = [
     "black>=24.1.0",
     "ipykernel>=6.29.5",
+    "jupyter>=1.1.1",
+    "jupyter-core>=5.7.2",
     "pytest>=8.0.0",
+    "pyyaml>=6.0.2",
 ]
 
 [tool.black]

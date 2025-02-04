@@ -19,17 +19,18 @@ build *BUILD_ARGS: check-uv
   uv build --project {{justfile_directory()}} {{BUILD_ARGS}}
 
 # Build README.md with Quarto
-build-readme *QUARTO_ARGS: check-quarto
-  uvx quarto {{QUARTO_ARGS}} render {{justfile_directory()}}/README.qmd
+build-readme *QUARTO_ARGS: check-readme-dependencies
+  uv run quarto {{QUARTO_ARGS}} render {{justfile_directory()}}/README.qmd
 
 # Check dependencies are installed
-check-dependencies: check-uv check-quarto
+check-dependencies: check-uv check-readme-dependencies
   which pytest
   which black
 
-# Check quarto-cli is installed
-check-quarto:
+# Check quarto-cli and jupyter is installed
+check-readme-dependencies:
   which quarto
+  which jupyter
 
 # Check uv is installed
 check-uv:
