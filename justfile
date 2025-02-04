@@ -22,6 +22,7 @@ build *BUILD_ARGS: check-uv
 check-dependencies: check-uv
   which pytest
   which black
+  which quarto
 
 # Check uv is installed
 check-uv:
