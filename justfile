@@ -1,7 +1,7 @@
 set dotenv-load := true
 
-TEST_PYPI_TOKEN := env_var('TEST_PYPI_TOKEN')
-PYPI_TOKEN := env_var('PYPI_TOKEN')
+TEST_PYPI_TOKEN := env('TEST_PYPI_TOKEN', '')
+PYPI_TOKEN := env('PYPI_TOKEN', '')
 python := justfile_directory() / ".venv" / "bin" / "python"
 
 # List all available recipes
