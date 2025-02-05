@@ -37,6 +37,9 @@ format:
     toc: false
     sidebar: false
     theme: sandstone
+    css: styles.css
+    page-layout: full
+    highlight-style: github
 
 quartodoc:
   title: Reference
