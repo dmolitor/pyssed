@@ -16,6 +16,7 @@ black: check-uv
 
 # Run `uv build`
 build *BUILD_ARGS: check-uv
+  rm -rf {{justfile_directory()}}/dist/*
   uv build --project {{justfile_directory()}} {{BUILD_ARGS}}
 
 # Build README.md with Quarto
