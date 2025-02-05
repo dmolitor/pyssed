@@ -7,6 +7,7 @@ engine: jupyter
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
 
 <!-- badges: start -->
+[![quartodoc](https://github.com/dmolitor/pyssed/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/dmolitor/pyssed/actions/workflows/gh-pages.yml)
 <!-- badges: end -->
 
 ```{python}

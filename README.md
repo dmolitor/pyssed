@@ -1,11 +1,12 @@
 # pyssed
-<a href='https://www.dmolitor.com/'><img src='README_files/pyssed.png' align="right" height="160" /></a>
+<a href='https://www.dmolitor.com/pyssed'><img src='docs/pyssed.png' align="right" height="160" /></a>
 
 
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
 
 <!-- badges: start -->
 
+[![quartodoc](https://github.com/dmolitor/pyssed/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/dmolitor/pyssed/actions/workflows/gh-pages.yml)
 <!-- badges: end -->
 
 The goal of pyssed is to implement the Mixture Adaptive Design (MAD), as
@@ -191,9 +192,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.074 (-0.07602, 0.22433)
-    - Arm 2: 0.197 (0.0803, 0.31442)
-    - Arm 3: 0.198 (0.09686, 0.30001)
+    - Arm 1: 0.057 (-0.09034, 0.20529)
+    - Arm 2: 0.198 (0.09383, 0.30122)
+    - Arm 3: 0.211 (0.10828, 0.31442)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -203,9 +204,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.074156 | -0.076022 | 0.224334 |
-| 1   | 2   | 0.197357 | 0.080298  | 0.314417 |
-| 2   | 3   | 0.198437 | 0.096863  | 0.300011 |
+| 0   | 1   | 0.057475 | -0.090341 | 0.205291 |
+| 1   | 2   | 0.197527 | 0.093835  | 0.301219 |
+| 2   | 3   | 0.211355 | 0.108285  | 0.314425 |
 
 <p>3 rows × 4 columns</p>
 
