@@ -193,9 +193,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.1 (-0.04583, 0.24501)
-    - Arm 2: 0.233 (0.11814, 0.34843)
-    - Arm 3: 0.242 (0.14379, 0.34024)
+    - Arm 1: 0.139 (-0.00865, 0.28602)
+    - Arm 2: 0.227 (0.11636, 0.33807)
+    - Arm 3: 0.241 (0.14128, 0.34014)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -205,9 +205,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.099589 | -0.045834 | 0.245011 |
-| 1   | 2   | 0.233287 | 0.118144  | 0.348430 |
-| 2   | 3   | 0.242015 | 0.143791  | 0.340239 |
+| 0   | 1   | 0.138683 | -0.008652 | 0.286017 |
+| 1   | 2   | 0.227213 | 0.116358  | 0.338068 |
+| 2   | 3   | 0.240712 | 0.141280  | 0.340144 |
 
 <p>3 rows × 4 columns</p>
 
@@ -225,13 +225,12 @@ each treatment arm over time.
         data=pd.DataFrame({"arm": [1, 2, 3], "ate": [0.1, 0.2, 0.22]}),
         linetype="dotted"
     )
-    + pn.facet_wrap("~ arm", nrow=3)
     + pn.theme(strip_text=pn.element_blank())
 )
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="500" height="300" />
+width="600" height="300" />
 
 The ATE estimates converge toward the ground truth, and the confidence
 sequences maintain valid coverage!
@@ -244,7 +243,7 @@ experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="500" height="300" />
+width="600" height="300" />
 
 Due to the TS algorithm, most samples go to the optimal Arm 3 and
 secondary Arm 2, with some random exploration in Arms 0 and 1.
@@ -256,7 +255,7 @@ experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="500" height="300" />
+width="600" height="300" />
 
 ### Equivalence to a completely randomized design
 
@@ -286,13 +285,12 @@ ground truth:
         data=pd.DataFrame({"arm": [1, 2, 3], "ate": [0.1, 0.2, 0.22]}),
         linetype="dotted"
     )
-    + pn.facet_wrap("~ arm", nrow=3)
     + pn.theme(strip_text=pn.element_blank())
 )
 ```
 
 <img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="500" height="300" />
+width="600" height="300" />
 
 And we can verify fully random assignment:
 
@@ -301,4 +299,4 @@ exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-15-output-1.png"
-width="500" height="300" />
+width="600" height="300" />

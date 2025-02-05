@@ -78,7 +78,7 @@ generator = np.random.default_rng(seed=123)
 #| echo: false
 #| output: false
 pn.options.dpi = 100
-pn.options.figure_size = (5, 3)
+pn.options.figure_size = (6, 3)
 ```
 
 ### Treatment arm outcomes
@@ -226,7 +226,6 @@ treatment arm over time.
         data=pd.DataFrame({"arm": [1, 2, 3], "ate": [0.1, 0.2, 0.22]}),
         linetype="dotted"
     )
-    + pn.facet_wrap("~ arm", nrow=3)
     + pn.theme(strip_text=pn.element_blank())
 )
 ```
@@ -273,7 +272,6 @@ truth:
         data=pd.DataFrame({"arm": [1, 2, 3], "ate": [0.1, 0.2, 0.22]}),
         linetype="dotted"
     )
-    + pn.facet_wrap("~ arm", nrow=3)
     + pn.theme(strip_text=pn.element_blank())
 )
 ```
