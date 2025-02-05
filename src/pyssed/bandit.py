@@ -4,25 +4,14 @@ from typing import Dict
 
 class Bandit(ABC):
     """
-    An abstract class for Bandit algorithms used in the MAD algorithm. Each
-    bandit algorithm must implement the abstract methods defined below.
-
-    Methods
-    -------
-    control
-        Get the index of the bandit control arm.
-    k
-        Get the number of bandit arms.
-    probabilities
-        Calculate bandit arm assignment probabilities.
-    reward
-        Calculate the reward for a selected bandit arm.
-    t
-        Get the current time step of the bandit.
+    An abstract class for Bandit algorithms used in the MAD algorithm.
+    
+    Each bandit algorithm that inherits from this class must implement all the
+    abstract methods defined in this class.
 
     Notes
     -----
-    See the detailed method documentation for in-depth explanation.
+    See the detailed method documentation for in-depth explanations.
     """
 
     @abstractmethod
@@ -56,7 +45,7 @@ class Bandit(ABC):
             corresponding probabilities. For example, if the bandit algorithm
             is UCB with three arms, and the third arm has the maximum
             confidence bound, then this should return the following dictionary:
-            {0: 0., 1: 0., 2: 1.}, since UCB is deterministic.
+            `{0: 0., 1: 0., 2: 1.}`, since UCB is deterministic.
         """
 
     @abstractmethod

@@ -1,13 +1,8 @@
 ---
-title: pyssed <a href='https://www.dmolitor.com/pyssed'><img src='docs/pyssed.png' align="right" height="160" /></a>
-format: gfm
-engine: jupyter
+jupyter: python3
 ---
 
-<!-- This document is rendered from README.qmd; Edit that file instead! -->
-
-<!-- badges: start -->
-<!-- badges: end -->
+# pyssed <a href='https://www.dmolitor.com/pyssed/'><img src='pyssed.png' align="right" height="160" /></a>
 
 ```{python}
 #| echo: false

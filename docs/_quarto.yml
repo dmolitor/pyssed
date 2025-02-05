@@ -1,0 +1,53 @@
+project:
+  type: website
+  output-dir: _site
+
+# tell quarto to read the generated sidebar
+# metadata-files:
+#   - _sidebar.yml
+website:
+  title: "pyssed"
+  description: "The Mixture Adaptive Design (MAD): An experimental design for anytime-valid causal inference on Multi-Armed Bandits."
+  page-navigation: true
+  favicon: "favicon.ico"
+  page-footer:
+    center: |
+      Built by [Daniel Molitor](https://dmolitor.com)
+  navbar:
+    background: light
+    pinned: true
+    logo: pyssed.png
+    left:
+      - text: "Reference"
+        file: reference/index.qmd
+      # - text: Learn more
+      #   menu:
+      #     - text: "Create consistent metadata for pins"
+      #       file: customize-pins-metadata.qmd
+      #     - text: "pins for R"
+      #       href: https://pins.rstudio.com
+      #       target: _blank
+    right:
+      - icon: github
+        href: https://github.com/dmolitor/pyssed
+        aria-label: Pyssed python GitHub
+
+format:
+  html:
+    toc: false
+    sidebar: false
+    theme: sandstone
+
+quartodoc:
+  title: Reference
+  package: pyssed
+  # sidebar: _sidebar.yml
+  sections:
+    - title: MAD experimental design
+      desc: "A class that implements the MAD experimental design"
+      contents:
+        - MAD
+    - title: Bandit base class
+      desc: "A base class to design bandit algorithms that are compatible with MAD"
+      contents:
+        - Bandit
