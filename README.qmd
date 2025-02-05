@@ -46,12 +46,12 @@ the efficiency and reliability of adaptive experiments.
 
 ## Installation
 
-pyssed can be installed from PyPI, e.g.:
+pyssed can be installed from PyPI with:
 ```python
 pip install pyssed
 ```
 
-or from GitHub, e.g.:
+or from GitHub with:
 ```python
 pip install git+https://github.com/dmolitor/pyssed
 ```
@@ -78,7 +78,7 @@ generator = np.random.default_rng(seed=123)
 #| echo: false
 #| output: false
 pn.options.dpi = 300
-pn.options.figure_size = (4, 3)
+pn.options.figure_size = (5, 2)
 ```
 
 ### Treatment arm outcomes
