@@ -1,5 +1,5 @@
 ---
-title: pyssed <a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
+title: pyssed <a href='https://www.dmolitor.com/'><img src='README_files/pyssed.png' align="right" height="160" /></a>
 format: gfm
 engine: jupyter
 ---

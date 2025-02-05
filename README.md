@@ -1,5 +1,5 @@
 # pyssed
-<a href='https://www.dmolitor.com/'><img src='docs/pyssed.png' align="right" height="160" /></a>
+<a href='https://www.dmolitor.com/'><img src='README_files/pyssed.png' align="right" height="160" /></a>
 
 
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
@@ -191,9 +191,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.099 (-0.05067, 0.24856)
-    - Arm 2: 0.151 (0.02868, 0.27306)
-    - Arm 3: 0.217 (0.11685, 0.31726)
+    - Arm 1: 0.074 (-0.07602, 0.22433)
+    - Arm 2: 0.197 (0.0803, 0.31442)
+    - Arm 3: 0.198 (0.09686, 0.30001)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -203,9 +203,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.098949 | -0.050667 | 0.248565 |
-| 1   | 2   | 0.150873 | 0.028684  | 0.273063 |
-| 2   | 3   | 0.217053 | 0.116850  | 0.317256 |
+| 0   | 1   | 0.074156 | -0.076022 | 0.224334 |
+| 1   | 2   | 0.197357 | 0.080298  | 0.314417 |
+| 2   | 3   | 0.198437 | 0.096863  | 0.300011 |
 
 <p>3 rows × 4 columns</p>
 
