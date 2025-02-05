@@ -193,9 +193,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.14 (-0.00253, 0.28171)
-    - Arm 2: 0.247 (0.14132, 0.35286)
-    - Arm 3: 0.24 (0.14246, 0.33693)
+    - Arm 1: 0.055 (-0.09394, 0.20355)
+    - Arm 2: 0.157 (0.03118, 0.28264)
+    - Arm 3: 0.197 (0.09508, 0.29887)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -205,9 +205,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.139590 | -0.002529 | 0.281710 |
-| 1   | 2   | 0.247090 | 0.141324  | 0.352857 |
-| 2   | 3   | 0.239694 | 0.142458  | 0.336930 |
+| 0   | 1   | 0.054806 | -0.093939 | 0.203551 |
+| 1   | 2   | 0.156910 | 0.031179  | 0.282641 |
+| 2   | 3   | 0.196978 | 0.095082  | 0.298873 |
 
 <p>3 rows × 4 columns</p>
 
@@ -230,7 +230,7 @@ each treatment arm over time.
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="900" height="450" />
+width="750" height="375" />
 
 The ATE estimates converge toward the ground truth, and the confidence
 sequences maintain valid coverage!
@@ -243,7 +243,7 @@ experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="900" height="450" />
+width="750" height="375" />
 
 Due to the TS algorithm, most samples go to the optimal Arm 3 and
 secondary Arm 2, with some random exploration in Arms 0 and 1.
@@ -255,7 +255,7 @@ experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="900" height="450" />
+width="750" height="375" />
 
 ### Equivalence to a completely randomized design
 
@@ -290,7 +290,7 @@ ground truth:
 ```
 
 <img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="900" height="450" />
+width="750" height="375" />
 
 And we can verify fully random assignment:
 
@@ -299,4 +299,4 @@ exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-15-output-1.png"
-width="900" height="450" />
+width="750" height="375" />
