@@ -105,7 +105,6 @@ class TSBernoulli(Bandit):
     A class for implementing Thompson Sampling on Bernoulli data
     """
     def __init__(self, k: int, control: int, reward: Callable[[int], float]):
-        self._active_arms = [x for x in range(k)]
         self._control = control
         self._k = k
         self._means = {x: 0. for x in range(k)}
@@ -121,19 +120,18 @@ class TSBernoulli(Bandit):
         return self._k
     
     def probabilities(self) -> Dict[int, float]:
-        assert self.k() == len(self._active_arms), "Mismatch in `len(self._active_arms)` and `self.k()`"
         samples = np.column_stack([
             np.random.beta(
                 a=self._params[idx]["alpha"],
                 b=self._params[idx]["beta"],
                 size=1000
             )
-            for idx in self._active_arms
+            for idx in range(self.k())
         ])
         max_indices = np.argmax(samples, axis=1)
         probs = {
             idx: np.sum(max_indices == i) / 1000
-            for i, idx in enumerate(self._active_arms)
+            for i, idx in enumerate(range(self.k()))
         }
         return probs
     
@@ -193,9 +191,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.055 (-0.09394, 0.20355)
-    - Arm 2: 0.157 (0.03118, 0.28264)
-    - Arm 3: 0.197 (0.09508, 0.29887)
+    - Arm 1: 0.099 (-0.05067, 0.24856)
+    - Arm 2: 0.151 (0.02868, 0.27306)
+    - Arm 3: 0.217 (0.11685, 0.31726)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -205,9 +203,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.054806 | -0.093939 | 0.203551 |
-| 1   | 2   | 0.156910 | 0.031179  | 0.282641 |
-| 2   | 3   | 0.196978 | 0.095082  | 0.298873 |
+| 0   | 1   | 0.098949 | -0.050667 | 0.248565 |
+| 1   | 2   | 0.150873 | 0.028684  | 0.273063 |
+| 2   | 3   | 0.217053 | 0.116850  | 0.317256 |
 
 <p>3 rows × 4 columns</p>
 

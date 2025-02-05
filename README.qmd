@@ -123,7 +123,6 @@ class TSBernoulli(Bandit):
     A class for implementing Thompson Sampling on Bernoulli data
     """
     def __init__(self, k: int, control: int, reward: Callable[[int], float]):
-        self._active_arms = [x for x in range(k)]
         self._control = control
         self._k = k
         self._means = {x: 0. for x in range(k)}
@@ -139,19 +138,18 @@ class TSBernoulli(Bandit):
         return self._k
     
     def probabilities(self) -> Dict[int, float]:
-        assert self.k() == len(self._active_arms), "Mismatch in `len(self._active_arms)` and `self.k()`"
         samples = np.column_stack([
             np.random.beta(
                 a=self._params[idx]["alpha"],
                 b=self._params[idx]["beta"],
                 size=1000
             )
-            for idx in self._active_arms
+            for idx in range(self.k())
         ])
         max_indices = np.argmax(samples, axis=1)
         probs = {
             idx: np.sum(max_indices == i) / 1000
-            for i, idx in enumerate(self._active_arms)
+            for i, idx in enumerate(range(self.k()))
         }
         return probs
     
