@@ -29,21 +29,26 @@ anytime-valid inference on the Average Treatment Effect (ATE).
 
 ## Installation
 
-Install pyssed from PyPI:
+pyssed can be installed from PyPI, e.g.:
 
 ``` python
 pip install pyssed
 ```
 
+or from GitHub, e.g.:
+
+``` python
+pip install git+https://github.com/dmolitor/pyssed
+```
+
 ## Usage
 
-To demonstrate the MAD, we will simulate an experiment with three
-treatment arms and one control arm. We will use Thompson Sampling (TS)
-as the underlying bandit algorithm and will demonstrate how MAD allows
-us to unbiasedly estimate ATEs for all of our treatment arms while
-providing confidence sequences with valid coverage.
+We’ll simulate an experiment with three treatment arms and one control
+arm using Thompson Sampling (TS) as the bandit algorithm. We’ll
+demonstrate how MAD enables unbiased ATE estimation for all treatments
+while maintaining valid confidence sequences.
 
-Let’s begin by importing the packages we’ll need for our simulation:
+First, import the necessary packages:
 
 ``` python
 import numpy as np
@@ -57,8 +62,8 @@ generator = np.random.default_rng(seed=123)
 
 ### Treatment arm outcomes
 
-We’ll begin by defining a function that generates outcomes (rewards) for
-each of our experiment arms:
+Next, define a function to generate outcomes (rewards) for each
+experiment arm:
 
 ``` python
 def reward_fn(arm: int) -> float:
@@ -71,35 +76,28 @@ def reward_fn(arm: int) -> float:
     return values[arm]
 ```
 
-Note that we are designing our experiment so that Arm 1 has a small ATE
-(0.1) and Arms 2 & 3 have similar, larger ATEs (0.2 and 0.22).
+We design the experiment so Arm 1 has a small ATE (0.1), while Arms 2
+and 3 have larger ATEs (0.2 and 0.22) that are very similar.
 
 ### Thompson Sampling bandit
 
-Next we will implement our underlying bandit algorithm which is TS for
-binary data. Specifically, this models the outcomes from each experiment
-arm as being drawn from a Bernoulli distribution with unknown parameter
-$\theta$, where $\theta$ has a prior Beta($\alpha$=1, $\beta$=1)
-distribution (a uniform prior).
+We’ll now implement TS for binary data, modeling each arm’s outcomes as
+drawn from a Bernoulli with an unknown parameter $\theta$, where
+$\theta$ follows a Beta($\alpha$=1, $\beta$=1) prior (a uniform prior).
 
-In order to implement MAD, pyssed assumes that the bandit algorithm is a
-class that follows some very specific design requirements. Specifically,
-the bandit algorithm should inherit from the `pyssed.Bandit` class which
-will force the bandit to implement a handful of methods that MAD relies
-on. The list of required methods is as follows:
+To use MAD, pyssed requires the bandit algorithm to be a class
+inheriting from `pyssed.Bandit`, which requires the bandit class to
+implement the following key methods:
 
-- `control()`: Returns the index of the bandit control arm.
-- `k()`: Returns the number of bandit arms.
-- `probabilities()`: Calculates and returns bandit arm assignment
-  probabilities.
-- `reward(arm)`: Calculates and returns the reward for a selected bandit
-  arm.
-- `t()` Returns the current time step of the bandit.
+- `control()`: Returns the control arm index.
+- `k()`: Returns the number of arms.
+- `probabilities()`: Computes arm assignment probabilities.
+- `reward(arm)`: Computes the reward for a selected arm.
+- `t()` Returns the current time step.
 
-For more detailed documentation see the documentation for
-`pyssed.Bandit`.
+For full details, see the `pyssed.Bandit` documentation.
 
-As an example we implement the TS bandit algorithm as follows:
+The following is an example TS implementation:
 
 ``` python
 class TSBernoulli(Bandit):
@@ -158,23 +156,22 @@ class TSBernoulli(Bandit):
         return step
 ```
 
-Now that we’ve implemented our TS bandit algorithm class we can wrap it
-in the MAD experimental design for inference on the ATEs!
+With our TS bandit algorithm implemented, we can now wrap it in the MAD
+experimental design for inference on the ATEs!
 
 ### The MAD
 
-For our MAD design, we need to specify a function that will intake the
-time-step (t) and will calculate a sequence that converges to 0. The
-primary caveat is that this sequence MUST converge to 0 slower than
-$1/(t^{1/4})$. Intuitively a sequence of $1/t^0 = 1$ will be equivalent
-to a randomized experiment with Bernoulli randomization and, in
-contrast, a sequence of $1/(t^{0.24})$ will adhere closely to the TS
+For our MAD design, we need a function that takes the time step $t$ and
+computes a sequence converging to 0. The key requirement is that this
+sequence must decay slower than $1/(t^{1/4})$.
+
+Intuitively, a sequence of $1/t^0 = 1$ corresponds to Bernoulli
+randomization, while a sequence of $1/(t^{0.24})$ closely follows the TS
 assignment policy.
 
-In this example we will use the latter sequence of $1/(t^{0.24})$.
-Additionally, we will estimate 95% confidence sequences so we will set
-our test size ($\alpha$) = 0.05. Finally, we will run our experiment for
-a total of 20,000 (`t_star = 20000`) iterations.
+In this example, we use $1/(t^{0.24})$ as our sequence. Additionally, we
+estimate 95% confidence sequences, setting our test size $\alpha=0.05$.
+We run the experiment for 20,000 iterations (`t_star = 20000`).
 
 ``` python
 experiment = MAD(
@@ -188,17 +185,17 @@ experiment.fit(verbose=False)
 
 ### Point estimates and confidence bands
 
-Now, to examine the results we can print a quick summary of the ATEs and
-their corresponding confidence sequences when the experiment ended:
+Now, to examine the results we can print a summary of the ATEs and their
+corresponding confidence sequences at the end of the experiment:
 
 ``` python
 experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.082 (-0.07388, 0.23846)
-    - Arm 2: 0.119 (-0.00407, 0.2426)
-    - Arm 3: 0.166 (0.06008, 0.27102)
+    - Arm 1: 0.104 (-0.0455, 0.2541)
+    - Arm 2: 0.18 (0.07617, 0.28412)
+    - Arm 3: 0.187 (0.08103, 0.29347)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -208,17 +205,16 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.082292 | -0.073878 | 0.238461 |
-| 1   | 2   | 0.119265 | -0.004073 | 0.242604 |
-| 2   | 3   | 0.165550 | 0.060081  | 0.271019 |
+| 0   | 1   | 0.104302 | -0.045496 | 0.254099 |
+| 1   | 2   | 0.180141 | 0.076166  | 0.284116 |
+| 2   | 3   | 0.187250 | 0.081028  | 0.293473 |
 
 <p>3 rows × 4 columns</p>
 
 ### Plotting results
 
-We can quickly visualize the ATE estimates and the corresponding
-confidence sequences for each of the treatment arms over the course of
-the experiment:
+We can also visualize the ATE estimates and confidence sequences for
+each treatment arm over time.
 
 ``` python
 (
@@ -229,46 +225,44 @@ the experiment:
         data=pd.DataFrame({"arm": [1, 2, 3], "ate": [0.1, 0.2, 0.22]}),
         linetype="dotted"
     )
+    + pn.facet_wrap("~ arm", nrow=3)
     + pn.theme(strip_text=pn.element_blank())
 )
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="1800" height="300" />
+width="1200" height="900" />
 
-We can see that the ATE point estimates converge towards the ground
-truth and that the confidence sequences provide good coverage!
+The ATE estimates converge toward the ground truth, and the confidence
+sequences maintain valid coverage!
 
-We may also want to see the algorithms sample assignment strategy over
-time:
+We can also examine the algorithm’s sample assignment strategy over
+time.
 
 ``` python
 experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="1800" height="300" />
+width="1200" height="900" />
 
-We can see that, as a result of the underlying TS algorithm, the
-majority of the sample is assigned to the optimal arm Arm 3 and the
-secondary Arm 2, with a small amount of random exploration in Arms 0, 1,
-and 2.
+Due to the TS algorithm, most samples go to the optimal Arm 3 and
+secondary Arm 2, with some random exploration in Arms 0 and 1.
 
-Similarly, we can plot the total sample assignment to each of the
-experiment arms:
+Similarly, we can plot the total sample assignments per arm.
 
 ``` python
 experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="1800" height="300" />
+width="1200" height="900" />
 
 ### Equivalence to a completely randomized design
 
-As noted above, if we set our time-diminishing sequence
-$\delta_t = 1/t^0 = 1$, this is equivalent to a completely randomized
-design. We can easily demonstrate this:
+As noted above, setting the time-diminishing sequence
+$\delta_t = 1/t^0 = 1$ results in a fully randomized design. We can
+easily demonstrate this:
 
 ``` python
 exp_bernoulli = MAD(
@@ -280,7 +274,7 @@ exp_bernoulli = MAD(
 exp_bernoulli.fit(verbose=False)
 ```
 
-As before we can plot the convergence of the estimated ATEs to the
+As before, we can plot the convergence of the estimated ATEs to the
 ground truth:
 
 ``` python
@@ -292,18 +286,19 @@ ground truth:
         data=pd.DataFrame({"arm": [1, 2, 3], "ate": [0.1, 0.2, 0.22]}),
         linetype="dotted"
     )
+    + pn.facet_wrap("~ arm", nrow=3)
     + pn.theme(strip_text=pn.element_blank())
 )
 ```
 
 <img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="1800" height="300" />
+width="1200" height="900" />
 
-And we can verify completely random assignment:
+And we can verify fully random assignment:
 
 ``` python
 exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-15-output-1.png"
-width="1800" height="300" />
+width="1200" height="900" />
