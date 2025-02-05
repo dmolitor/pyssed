@@ -38,11 +38,6 @@ jobs:
       
       - name: Build with quartodoc
         run: just build-docs
-
-      - name: Render Quarto Project
-        uses: quarto-dev/quarto-actions/render@v2
-        with:
-          path: docs
       
       - name: Deploy to GitHub pages 🚀
         if: github.event_name != 'pull_request'

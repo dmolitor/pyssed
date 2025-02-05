@@ -23,6 +23,7 @@ build *BUILD_ARGS: check-uv
 [working-directory: 'docs']
 build-docs: check-uv
   uv run quartodoc build
+  uv run quarto render
 
 # Build README.md with Quarto
 build-readme *QUARTO_ARGS: check-readme-dependencies
