@@ -193,9 +193,9 @@ experiment.summary()
 ```
 
     Treatment effect estimates:
-    - Arm 1: 0.046 (-0.10327, 0.19431)
-    - Arm 2: 0.16 (0.01756, 0.30222)
-    - Arm 3: 0.202 (0.09992, 0.30466)
+    - Arm 1: 0.043 (-0.10683, 0.19242)
+    - Arm 2: 0.149 (0.03414, 0.26483)
+    - Arm 3: 0.177 (0.07261, 0.2818)
 
 We can also extract this summary into a pandas DataFrame:
 
@@ -205,9 +205,9 @@ experiment.estimates()
 
 |     | arm | ate      | lb        | ub       |
 |-----|-----|----------|-----------|----------|
-| 0   | 1   | 0.045519 | -0.103271 | 0.194308 |
-| 1   | 2   | 0.159891 | 0.017564  | 0.302218 |
-| 2   | 3   | 0.202291 | 0.099919  | 0.304664 |
+| 0   | 1   | 0.042795 | -0.106825 | 0.192415 |
+| 1   | 2   | 0.149485 | 0.034136  | 0.264834 |
+| 2   | 3   | 0.177201 | 0.072607  | 0.281796 |
 
 <p>3 rows × 4 columns</p>
 
@@ -231,7 +231,7 @@ each treatment arm over time.
 ```
 
 <img src="README_files/figure-commonmark/cell-10-output-1.png"
-width="1500" height="600" />
+width="1000" height="400" />
 
 The ATE estimates converge toward the ground truth, and the confidence
 sequences maintain valid coverage!
@@ -244,7 +244,7 @@ experiment.plot_sample_assignment()
 ```
 
 <img src="README_files/figure-commonmark/cell-11-output-1.png"
-width="1500" height="600" />
+width="1000" height="400" />
 
 Due to the TS algorithm, most samples go to the optimal Arm 3 and
 secondary Arm 2, with some random exploration in Arms 0 and 1.
@@ -256,7 +256,7 @@ experiment.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-12-output-1.png"
-width="1500" height="600" />
+width="1000" height="400" />
 
 ### Equivalence to a completely randomized design
 
@@ -292,7 +292,7 @@ ground truth:
 ```
 
 <img src="README_files/figure-commonmark/cell-14-output-1.png"
-width="1500" height="600" />
+width="1000" height="400" />
 
 And we can verify fully random assignment:
 
@@ -301,4 +301,4 @@ exp_bernoulli.plot_n()
 ```
 
 <img src="README_files/figure-commonmark/cell-15-output-1.png"
-width="1500" height="600" />
+width="1000" height="400" />
