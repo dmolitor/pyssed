@@ -1,6 +1,6 @@
 [project]
 name = "pyssed"
-version = "0.1.0"
+version = "0.1.1"
 description = "The Mixture Adaptive Design (MAD): An experimental design for anytime-valid causal inference on Multi-Armed Bandits."
 readme = "README.md"
 authors = [
