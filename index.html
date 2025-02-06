@@ -202,7 +202,7 @@ window.Quarto = {
 <h2 class="anchored" data-anchor-id="usage">Usage</h2>
 <p>We’ll simulate an experiment with three treatment arms and one control arm using Thompson Sampling (TS) as the bandit algorithm. We’ll demonstrate how MAD enables unbiased ATE estimation for all treatments while maintaining valid confidence sequences.</p>
 <p>First, import the necessary packages:</p>
-<div id="e5aaf673" class="cell" data-execution_count="2">
+<div id="58ff32c9" class="cell" data-execution_count="2">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine <span class="im">as</span> pn</span>
@@ -214,7 +214,7 @@ window.Quarto = {
 <section id="treatment-arm-outcomes" class="level3">
 <h3 class="anchored" data-anchor-id="treatment-arm-outcomes">Treatment arm outcomes</h3>
 <p>Next, define a function to generate outcomes (rewards) for each experiment arm:</p>
-<div id="f3e37ff2" class="cell" data-execution_count="4">
+<div id="1b7931ba" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> reward_fn(arm: <span class="bu">int</span>) <span class="op">-&gt;</span> <span class="bu">float</span>:</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    values <span class="op">=</span> {</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>        <span class="dv">0</span>: generator.binomial(<span class="dv">1</span>, <span class="fl">0.5</span>),  <span class="co"># Control arm</span></span>
@@ -239,7 +239,7 @@ window.Quarto = {
 </ul>
 <p>For full details, see the <code>pyssed.Bandit</code> documentation.</p>
 <p>The following is an example TS implementation:</p>
-<div id="0acdf4ac" class="cell" data-execution_count="5">
+<div id="365a56e0" class="cell" data-execution_count="5">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TSBernoulli(Bandit):</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    A class for implementing Thompson Sampling on Bernoulli data</span></span>
@@ -300,7 +300,7 @@ window.Quarto = {
 <p>For our MAD design, we need a function that takes the time step <span class="math inline">\(t\)</span> and computes a sequence converging to 0. The key requirement is that this sequence must decay slower than <span class="math inline">\(1/(t^{1/4})\)</span>.</p>
 <p>Intuitively, a sequence of <span class="math inline">\(1/t^0 = 1\)</span> corresponds to Bernoulli randomization, while a sequence of <span class="math inline">\(1/(t^{0.24})\)</span> closely follows the TS assignment policy.</p>
 <p>In this example, we use <span class="math inline">\(1/(t^{0.24})\)</span> as our sequence. Additionally, we estimate 95% confidence sequences, setting our test size <span class="math inline">\(\alpha=0.05\)</span>. We run the experiment for 20,000 iterations (<code>t_star = 20000</code>).</p>
-<div id="dbc3960e" class="cell" data-execution_count="6">
+<div id="f3581639" class="cell" data-execution_count="6">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>experiment <span class="op">=</span> MAD(</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    bandit<span class="op">=</span>TSBernoulli(k<span class="op">=</span><span class="dv">4</span>, control<span class="op">=</span><span class="dv">0</span>, reward<span class="op">=</span>reward_fn),</span>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.05</span>,</span>
@@ -313,17 +313,17 @@ window.Quarto = {
 <section id="point-estimates-and-confidence-bands" class="level3">
 <h3 class="anchored" data-anchor-id="point-estimates-and-confidence-bands">Point estimates and confidence bands</h3>
 <p>Now, to examine the results we can print a summary of the ATEs and their corresponding confidence sequences at the end of the experiment:</p>
-<div id="caafca0d" class="cell" data-execution_count="7">
+<div id="a935e5f5" class="cell" data-execution_count="7">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>experiment.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Treatment effect estimates:
-- Arm 1: 0.043 (-0.10817, 0.19444)
-- Arm 2: 0.146 (0.03005, 0.26281)
-- Arm 3: 0.174 (0.06821, 0.27902)</code></pre>
+- Arm 1: 0.089 (-0.05951, 0.23723)
+- Arm 2: 0.147 (0.02394, 0.2701)
+- Arm 3: 0.196 (0.09282, 0.2984)</code></pre>
 </div>
 </div>
 <p>We can also extract this summary into a pandas DataFrame:</p>
-<div id="9a172fe3" class="cell" data-execution_count="8">
+<div id="31463098" class="cell" data-execution_count="8">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>experiment.estimates()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display" data-execution_count="8">
 <table class="dataframe caption-top table table-sm table-striped small" data-quarto-postprocess="true" data-border="1">
@@ -340,23 +340,23 @@ window.Quarto = {
 <tr class="odd">
 <td data-quarto-table-cell-role="th">0</td>
 <td>1</td>
-<td>0.043137</td>
-<td>-0.108165</td>
-<td>0.194438</td>
+<td>0.088862</td>
+<td>-0.059510</td>
+<td>0.237234</td>
 </tr>
 <tr class="even">
 <td data-quarto-table-cell-role="th">1</td>
 <td>2</td>
-<td>0.146426</td>
-<td>0.030046</td>
-<td>0.262807</td>
+<td>0.147022</td>
+<td>0.023943</td>
+<td>0.270102</td>
 </tr>
 <tr class="odd">
 <td data-quarto-table-cell-role="th">2</td>
 <td>3</td>
-<td>0.173614</td>
-<td>0.068206</td>
-<td>0.279022</td>
+<td>0.195610</td>
+<td>0.092817</td>
+<td>0.298403</td>
 </tr>
 </tbody>
 </table>
@@ -368,7 +368,7 @@ window.Quarto = {
 <section id="plotting-results" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-results">Plotting results</h3>
 <p>We can also visualize the ATE estimates and confidence sequences for each treatment arm over time.</p>
-<div id="0fabb712" class="cell" data-execution_count="9">
+<div id="d8d63254" class="cell" data-execution_count="9">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    experiment.plot_ate()</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> pn.coord_cartesian(ylim<span class="op">=</span>(<span class="op">-</span><span class="fl">.5</span>, <span class="fl">1.0</span>))</span>
@@ -389,7 +389,7 @@ window.Quarto = {
 </div>
 <p>The ATE estimates converge toward the ground truth, and the confidence sequences maintain valid coverage!</p>
 <p>We can also examine the algorithm’s sample assignment strategy over time.</p>
-<div id="d22f15d5" class="cell" data-execution_count="10">
+<div id="c885983e" class="cell" data-execution_count="10">
 <div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>experiment.plot_sample_assignment()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -401,7 +401,7 @@ window.Quarto = {
 </div>
 <p>Due to the TS algorithm, most samples go to the optimal Arm 3 and secondary Arm 2, with some random exploration in Arms 0 and 1.</p>
 <p>Similarly, we can plot the total sample assignments per arm.</p>
-<div id="5947161a" class="cell" data-execution_count="11">
+<div id="99b64bbc" class="cell" data-execution_count="11">
 <div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>experiment.plot_n()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -415,7 +415,7 @@ window.Quarto = {
 <section id="equivalence-to-a-completely-randomized-design" class="level3">
 <h3 class="anchored" data-anchor-id="equivalence-to-a-completely-randomized-design">Equivalence to a completely randomized design</h3>
 <p>As noted above, setting the time-diminishing sequence <span class="math inline">\(\delta_t = 1/t^0 = 1\)</span> results in a fully randomized design. We can easily demonstrate this:</p>
-<div id="b3891b10" class="cell" data-execution_count="12">
+<div id="29a965f6" class="cell" data-execution_count="12">
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>exp_bernoulli <span class="op">=</span> MAD(</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>    bandit<span class="op">=</span>TSBernoulli(k<span class="op">=</span><span class="dv">4</span>, control<span class="op">=</span><span class="dv">0</span>, reward<span class="op">=</span>reward_fn),</span>
 <span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.05</span>,</span>
@@ -425,7 +425,7 @@ window.Quarto = {
 <span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>exp_bernoulli.fit(verbose<span class="op">=</span><span class="va">False</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>As before, we can plot the convergence of the estimated ATEs to the ground truth:</p>
-<div id="6f25d9fe" class="cell" data-execution_count="13">
+<div id="c9af23d0" class="cell" data-execution_count="13">
 <div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    exp_bernoulli.plot_ate()</span>
 <span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="op">+</span> pn.coord_cartesian(ylim<span class="op">=</span>(<span class="op">-</span><span class="fl">.1</span>, <span class="fl">0.6</span>))</span>
@@ -445,7 +445,7 @@ window.Quarto = {
 </div>
 </div>
 <p>And we can verify fully random assignment:</p>
-<div id="7e99e946" class="cell" data-execution_count="14">
+<div id="9a82341d" class="cell" data-execution_count="14">
 <div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>exp_bernoulli.plot_n()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div>
