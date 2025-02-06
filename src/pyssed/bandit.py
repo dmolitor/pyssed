@@ -5,7 +5,7 @@ from typing import Dict
 class Bandit(ABC):
     """
     An abstract class for Bandit algorithms used in the MAD algorithm.
-    
+
     Each bandit algorithm that inherits from this class must implement all the
     abstract methods defined in this class.
 
