@@ -34,6 +34,11 @@ check-dependencies: check-uv check-readme-dependencies
   which pytest
   which black
 
+# Check if git and GH cli are installed
+check-github:
+  which git
+  which gh
+
 # Check quarto-cli and jupyter is installed
 check-readme-dependencies:
   which quarto
@@ -42,6 +47,20 @@ check-readme-dependencies:
 # Check uv is installed
 check-uv:
   @which uv
+
+# Publish a package release on GitHub
+publish-github: check-uv check-github
+  #!/usr/bin/env zsh
+  VERSION=$(uv run python -c "import pyssed; print(pyssed.__version__)")
+  if git ls-remote --tags origin | grep -q "refs/tags/v$VERSION"; then
+    echo "Release v$VERSION already exists."
+    exit 1
+  fi
+  git tag v$VERSION
+  git push origin v$VERSION
+  gh release create v$VERSION dist/* \
+    --title "Release v$VERSION" \
+    --notes "New release of version $VERSION."
 
 # Publish the package to PyPI
 publish-pypi: check-uv
@@ -54,7 +73,3 @@ publish-testpypi: check-uv
 # Run tests with PyTest
 test *TEST_ARGS: check-uv
   uv run pytest {{TEST_ARGS}}
-
-# # Test that the package can be installed and imported with `uv run`
-# test-package-run: check-uv
-#   uv run --with pyssed --no-project -- python -c "import pyssed"
