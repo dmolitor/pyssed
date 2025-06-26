@@ -70,7 +70,7 @@ def reward_no_covariates(arm: int):
 #| echo: false
 #| output: false
 pn.options.dpi = 125
-pn.options.figure_size = (7, 4)
+pn.options.figure_size = (6, 4)
 ```
 
 Next, we will run MAD both with and without covariates. We will
