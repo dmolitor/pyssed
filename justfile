@@ -23,6 +23,7 @@ build *BUILD_ARGS: check-uv
 [working-directory: "docs"]
 build-docs: check-uv
   uv run quartodoc build
+  uv run quartodoc interlinks
   uv run quarto render
 
 # Check dependencies are installed

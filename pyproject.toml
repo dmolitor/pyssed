@@ -1,7 +1,7 @@
 [project]
 name = "pyssed"
-version = "0.1.2"
-description = "The Mixture Adaptive Design (MAD): An experimental design for anytime-valid causal inference on Multi-Armed Bandits."
+version = "0.2.0"
+description = "The Mixture Adaptive Design (MAD) and extensions: Robust and precise anytime-valid causal inference in adaptive experiments"
 readme = "README.md"
 authors = [
     { name = "Daniel Molitor", email = "molitdj97@gmail.com" }
@@ -31,7 +31,7 @@ dev = [
 
 [tool.black]
 line-length = 88
-target-version = ['py310']
+target-version = ['py312']
 include = '\.pyi?$'
 
 #[[tool.uv.index]]

@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
-from typing import Dict
+import numpy as np
+import pandas as pd
+from typing import Callable, Dict
 
 
 class Bandit(ABC):
@@ -49,7 +51,7 @@ class Bandit(ABC):
         """
 
     @abstractmethod
-    def reward(self, arm: int) -> float:
+    def reward(self, arm: int) -> "Reward":
         """Calculate the reward for a selected bandit arm.
 
         Returns the reward for a selected arm.
@@ -61,8 +63,9 @@ class Bandit(ABC):
 
         Returns
         -------
-        float
-            The resulting reward.
+        Reward
+            The resulting Reward containing any individual-level covariates
+            and the observed reward.
         """
 
     @abstractmethod
@@ -79,3 +82,121 @@ class Bandit(ABC):
         int
             The current time step.
         """
+
+
+class Reward:
+    """
+    A simple class for reward functions.
+
+    Each reward function should return a reward object. For covariate adjusted
+    algorithms, the reward should contain both the outcome as well as the
+    corresponding covariates. For non-covariate-adjusted algorithms, only the
+    outcome should be specified.
+
+    Attributes
+    ----------
+    outcome : float
+        The outcome of the reward function.
+    covariates : pd.DataFrame | None
+        (Optional) The corresponding individual-level covariates.
+    """
+
+    def __init__(self, outcome: float, covariates: pd.DataFrame | None = None):
+        self.outcome = outcome
+        self.covariates = covariates
+
+
+class TSBernoulli(Bandit):
+    """
+    A class implementing Thompson Sampling on Bernoulli data with a Beta prior.
+
+    This is an example implementation of the `Bandit` meta-class.
+
+    Parameters
+    ----------
+    k : int
+        The number of bandit arms.
+    control : int
+        The (0-based) index of the control arm.
+    reward : Callable[[int], Reward]
+        This function should take one input (the selected arm index) and output
+        a Reward object containing the reward and (optionally) any covariates.
+    optimize : {"max", "min"}
+        Should Thompson Sampling select the arm that maximizes or minimizes the
+        posterior probability of success.
+    """
+
+    def __init__(
+        self,
+        k: int,
+        control: int,
+        reward: Callable[[int], float],
+        optimize: str = "max",
+    ):
+        self._active_arms = [x for x in range(k)]
+        self._control = control
+        self._k = k
+        self._means = {x: 0.0 for x in range(k)}
+        self._optimize = optimize
+        self._params = {x: {"alpha": 1, "beta": 1} for x in range(k)}
+        self._rewards = {x: [] for x in range(k)}
+        self._reward_fn = reward
+        self._t = 1
+
+    def calculate_probs(self) -> Dict[int, float]:
+        sample_size = 1
+        samples = np.column_stack(
+            [
+                np.random.beta(
+                    a=self._params[idx]["alpha"],
+                    b=self._params[idx]["beta"],
+                    size=sample_size,
+                )
+                for idx in self._active_arms
+            ]
+        )
+        if self._optimize == "max":
+            optimal_indices = np.argmax(samples, axis=1)
+        elif self._optimize == "min":
+            optimal_indices = np.argmin(samples, axis=1)
+        else:
+            raise ValueError("`self._optimal` must be one of: ['max', 'min']")
+        win_counts = {
+            idx: np.sum(optimal_indices == i) / sample_size
+            for i, idx in enumerate(self._active_arms)
+        }
+        return win_counts
+
+    def control(self) -> int:
+        return self._control
+
+    def k(self) -> int:
+        return self._k
+
+    def probabilities(self) -> Dict[int, float]:
+        assert self.k() == len(
+            self._active_arms
+        ), "Mismatch in `len(self._active_arms)` and `self.k()`"
+        probs = self.calculate_probs()
+        return probs
+
+    def reward(self, arm: int) -> Reward:
+        reward: Reward = self._reward_fn(arm)
+        if not isinstance(reward, Reward):
+            raise ValueError(
+                "The provided reward function must return a `Reward` object"
+            )
+        self._rewards[arm].append(reward.outcome)
+        if reward.outcome == 1:
+            self._params[arm]["alpha"] += 1
+        else:
+            self._params[arm]["beta"] += 1
+        self._means[arm] = self._params[arm]["alpha"] / (
+            self._params[arm]["alpha"] + self._params[arm]["beta"]
+        )
+        return reward
+
+    def t(self) -> int:
+        step = self._t
+        self._t += 1
+        return step

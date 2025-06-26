@@ -5,4 +5,4 @@ __version__ = version(__name__)
 
 # populate package namespace
 from pyssed.bandit import Bandit
-from pyssed.mad import MAD
+from pyssed.mad import MAD, MADBase, MADMod
