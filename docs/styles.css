@@ -1,0 +1,96 @@
+/* css styles */
+
+table {
+  border-collapse: collapse;
+  border: none;
+}
+
+table td, table th {
+  border: none;
+}
+
+details summary::before {
+  display: inline-block;
+  width: 0.5em;
+  text-align: right;
+  margin-right: 0.2em;
+  font-size: 1.5em; /* Increase font size */
+}
+
+details[open] summary::before {
+  display: inline-block;
+  width: 0.5em;
+  text-align: right;
+  margin-right: 0.2em;
+  font-size: 1.5em;
+}
+
+.about-image {
+  float: left;
+  height: auto;
+  margin: 10px;
+  width: 40%;
+  min-width: 200px;
+  padding-right: 50px;
+  text-align: left;
+}
+
+@media (max-width: 640px) {
+  .name-text {
+    font-size: 30px;
+  }
+  
+  .what-i-do {
+    font-size: 18px;
+  }
+}
+
+@media (min-width: 641px) {
+  .name-text {
+    font-size: 30px;
+  }
+  
+  .what-i-do {
+    font-size: 18px;
+  }
+}
+
+.about-text {
+  font-size: 18px;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.icon-box {
+  text-align: center;
+}
+
+.icon-img {
+  border-radius: 2%;
+  width: 30%;
+  height: auto;
+  min-width: 250px;
+}
+
+.icon-lg {
+  font-size: 2em;
+}
+
+.button {
+  border: none;
+  border-radius: 16px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
+
+.profile-image {
+  height: auto;
+  vertical-align: middle;
+  width: 25%;
+  min-width: 250px;
+}

@@ -1,0 +1,17 @@
+# Reference {.doc .doc-index}
+
+## MAD experimental design
+
+A class that implements the MAD experimental design
+
+| | |
+| --- | --- |
+| [MAD](MAD.qmd#pyssed.MAD) | A class implementing Liang and Bojinov's Mixture-Adaptive Design (MAD). |
+
+## Bandit base class
+
+A base class to design bandit algorithms that are compatible with MAD
+
+| | |
+| --- | --- |
+| [Bandit](Bandit.qmd#pyssed.Bandit) | An abstract class for Bandit algorithms used in the MAD algorithm. |

@@ -6,7 +6,7 @@ project:
 # metadata-files:
 #   - _sidebar.yml
 website:
-  title: "pyssed"
+  title: "<b>pyssed</b>"
   description: "The Mixture Adaptive Design (MAD): An experimental design for anytime-valid causal inference on Multi-Armed Bandits."
   page-navigation: true
   favicon: "favicon.ico"
@@ -17,7 +17,7 @@ website:
     background: light
     foreground: secondary
     pinned: true
-    logo: pyssed.png
+    # logo: pyssed.png
     left:
       - text: "Reference"
         file: reference/index.qmd

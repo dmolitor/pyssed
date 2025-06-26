@@ -1,0 +1,104 @@
+# Bandit { #pyssed.Bandit }
+
+```python
+Bandit()
+```
+
+An abstract class for Bandit algorithms used in the MAD algorithm.
+
+Each bandit algorithm that inherits from this class must implement all the
+abstract methods defined in this class.
+
+## Notes {.doc-section .doc-section-notes}
+
+See the detailed method documentation for in-depth explanations.
+
+## Methods
+
+| Name | Description |
+| --- | --- |
+| [control](#pyssed.Bandit.control) | Get the index of the bandit control arm. |
+| [k](#pyssed.Bandit.k) | Get the number of bandit arms. |
+| [probabilities](#pyssed.Bandit.probabilities) | Calculate bandit arm assignment probabilities. |
+| [reward](#pyssed.Bandit.reward) | Calculate the reward for a selected bandit arm. |
+| [t](#pyssed.Bandit.t) | Get the current time step of the bandit. |
+
+### control { #pyssed.Bandit.control }
+
+```python
+Bandit.control()
+```
+
+Get the index of the bandit control arm.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description                                                                                                                                                  |
+|--------|--------|--------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|        | int    | The index of the arm that is the control arm. E.g. if the bandit is a 3-arm bandit with the first arm being the control arm, this should return the value 0. |
+
+### k { #pyssed.Bandit.k }
+
+```python
+Bandit.k()
+```
+
+Get the number of bandit arms.
+
+int
+    The number of arms in the bandit.
+
+### probabilities { #pyssed.Bandit.probabilities }
+
+```python
+Bandit.probabilities()
+```
+
+Calculate bandit arm assignment probabilities.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type               | Description                                                                                                                                                                                                                                                                                                     |
+|--------|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+|        | Dict\[int, float\] | A dictionary where keys are arm indices and values are the corresponding probabilities. For example, if the bandit algorithm is UCB with three arms, and the third arm has the maximum confidence bound, then this should return the following dictionary: `{0: 0., 1: 0., 2: 1.}`, since UCB is deterministic. |
+
+### reward { #pyssed.Bandit.reward }
+
+```python
+Bandit.reward(arm)
+```
+
+Calculate the reward for a selected bandit arm.
+
+Returns the reward for a selected arm.
+
+#### Parameters {.doc-section .doc-section-parameters}
+
+| Name   | Type   | Description                           | Default    |
+|--------|--------|---------------------------------------|------------|
+| arm    | int    | The index of the selected bandit arm. | _required_ |
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description           |
+|--------|--------|-----------------------|
+|        | float  | The resulting reward. |
+
+### t { #pyssed.Bandit.t }
+
+```python
+Bandit.t()
+```
+
+Get the current time step of the bandit.
+
+This method returns the current time step of the bandit, and then
+increments the time step by 1. E.g. if the bandit has completed
+9 iterations, this should return the value 10. Time steps start
+at 1, not 0.
+
+#### Returns {.doc-section .doc-section-returns}
+
+| Name   | Type   | Description            |
+|--------|--------|------------------------|
+|        | int    | The current time step. |

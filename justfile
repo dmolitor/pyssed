@@ -20,14 +20,10 @@ build *BUILD_ARGS: check-uv
   uv build --project {{justfile_directory()}} {{BUILD_ARGS}}
 
 # Build the website docs with quartodoc
-[working-directory: 'docs']
+[working-directory: "docs"]
 build-docs: check-uv
   uv run quartodoc build
   uv run quarto render
-
-# Build README.md with Quarto
-build-readme *QUARTO_ARGS: check-readme-dependencies
-  uv run quarto {{QUARTO_ARGS}} render {{justfile_directory()}}/README.qmd
 
 # Check dependencies are installed
 check-dependencies: check-uv check-readme-dependencies
