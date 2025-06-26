@@ -200,7 +200,7 @@ window.Quarto = {
 <p>We’ll simulate a simple binary experiment (<span class="math inline">\(w \in \{0, 1\}\)</span>) and demonstrate how MAD enables unbiased ATE estimation and how covariate-adjusted MAD (MADCovar) can provide significant improvements in precision.</p>
 <p>Individual-level potential outcomes are generated as i.i.d draws from <span class="math inline">\(Y_i(w) \sim \text{Bernoulli}(\mu_i(w))\)</span> with <span class="math display">\[\mu_i(w) = 0.35 + \mathbf{1}\{W_i=w\}0.2 + 0.3 X_{1,i} + 0.1 X_{2,i} - 0.2 X_{3,i},\]</span> where <span class="math inline">\(X_{1,i},X_{2,i},X_{3,i}\sim\text{Bernoulli}(0.6), \text{Bernoulli}(0.5), \text{ and } \text{Bernoulli}(0.7)\)</span>, respectively. This results in ATE <span class="math inline">\(=0.2\)</span>.</p>
 <p>We’ll first spin up a reward function that will generate individual-level potential outcomes and covariates drawn from this data-generating process. We will have one reward function that records the covariates and one that ignores the covariates.</p>
-<div id="d6aab830" class="cell" data-execution_count="1">
+<div id="3ffbef7b" class="cell" data-execution_count="1">
 <div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> plotnine <span class="im">as</span> pn</span>
@@ -226,7 +226,7 @@ window.Quarto = {
 </div>
 <p>Next, we will run MAD both with and without covariates. We will see that both approaches give us valid inference, but that, unsurprisingly, including covariates gives us improvements in the precision. We set Thompson Sampling as the underlying adaptive assignment algorithm, a quickly-decaying sequence <span class="math inline">\(\delta_t = \frac{1}{t^{1/0.24}}\)</span>, and (for MADCovar) a linear probability model for the outcome models fit on <span class="math inline">\(\{X_{1, i}, X_{2, i}, X_{3, i}\}\)</span>. Finally, we simulate MAD and MADCovar for 2,000 units and calculate the corresponding ATE estimates and 95% CSs.</p>
 <p>First, we will run our experiment with MADCovar:</p>
-<div id="15290758" class="cell" data-execution_count="3">
+<div id="7e4d11b8" class="cell" data-execution_count="3">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>mad_covariates <span class="op">=</span> MAD(</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    bandit<span class="op">=</span>TSBernoulli(k<span class="op">=</span><span class="dv">2</span>, control<span class="op">=</span><span class="dv">0</span>, reward<span class="op">=</span>reward_covariates),</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.05</span>,</span>
@@ -242,7 +242,7 @@ window.Quarto = {
 <span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>and then repeat the experiment with MAD:</p>
-<div id="467d40c8" class="cell" data-execution_count="4">
+<div id="b20cbe89" class="cell" data-execution_count="4">
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>mad_no_covariates <span class="op">=</span> MAD(</span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    bandit<span class="op">=</span>TSBernoulli(k<span class="op">=</span><span class="dv">2</span>, control<span class="op">=</span><span class="dv">0</span>, reward<span class="op">=</span>reward_no_covariates),</span>
 <span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    alpha<span class="op">=</span><span class="fl">0.05</span>,</span>
@@ -252,7 +252,7 @@ window.Quarto = {
 <span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>mad_no_covariates.fit(verbose<span class="op">=</span><span class="va">False</span>, early_stopping<span class="op">=</span><span class="va">False</span>, mc_adjust<span class="op">=</span><span class="va">None</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Now, we can compare the precision of the 95% CSs for both methods.</p>
-<div id="56ac9878" class="cell" data-fig-height="6" data-fig-width="10" data-execution_count="5">
+<div id="b3e0c996" class="cell" data-fig-height="6" data-fig-width="10" data-execution_count="5">
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
