@@ -6,7 +6,7 @@ project:
 # metadata-files:
 #   - _sidebar.yml
 website:
-  title: "<b>pyssed</b>"
+  title: "pyssed"
   description: "The Mixture Adaptive Design (MAD): An experimental design for anytime-valid causal inference on Multi-Armed Bandits."
   page-navigation: true
   favicon: "favicon.ico"
@@ -17,7 +17,6 @@ website:
     background: light
     foreground: secondary
     pinned: true
-    # logo: pyssed.png
     left:
       - text: "Reference"
         file: reference/index.qmd
@@ -39,20 +38,29 @@ format:
     sidebar: false
     theme: sandstone
     # css: styles.css
-    # page-layout: full
     page-layout: full
     highlight-style: github
 
 quartodoc:
   title: Reference
   package: pyssed
+  render_interlinks: true
   # sidebar: _sidebar.yml
   sections:
-    - title: MAD experimental design
-      desc: "A class that implements the MAD experimental design"
+    - title: Foundational functions
+      desc: "Classes and functions that are crucial for both the `MAD` and `MADMod` classes"
+      contents:
+        - MADBase
+        - bandit.Bandit
+        - bandit.Reward
+        - model.Model
+      
+    - title: Covariate-adjusted MAD
+      desc: "MAD that supports covariate adjustment for improved ATE precision"
       contents:
         - MAD
-    - title: Bandit base class
-      desc: "A base class to design bandit algorithms that are compatible with MAD"
+    
+    - subtitle: Power-balanced MAD
+      desc: "MAD that dynamically adjusts sample allocation to improve statistical power"
       contents:
-        - Bandit
+        - MADMod
