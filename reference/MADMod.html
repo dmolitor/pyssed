@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>mad – pyssed</title>
+<title>madmod – pyssed</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,10 +152,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="pyssed.MAD" class="level1">
-<h1>MAD</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MAD(<span class="va">self</span>, bandit, alpha, delta, t_star, model<span class="op">=</span><span class="va">None</span>, n_warmup<span class="op">=</span><span class="dv">1</span>, pooled<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>A class implementing the Mixture-Adaptive Design (MAD; Liang and Bojinov, 2024) both with or without covariate adjustment (MADCovar; Molitor and Gold, 2025).</p>
+<section id="pyssed.MADMod" class="level1">
+<h1>MADMod</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MADMod(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="va">self</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    bandit,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    alpha,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    delta,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    t_star,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    decay<span class="op">=</span><span class="kw">lambda</span> x: <span class="dv">1</span> <span class="op">/</span> np.sqrt(x),</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    model<span class="op">=</span><span class="va">None</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    n_warmup<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    pooled<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>This class implements Power-adjusted MAD (MADMod; Molitor and Gold, 2025).</p>
 <section id="parameters" class="level2 doc-section doc-section-parameters">
 <h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
 <table class="caption-top table">
@@ -193,22 +203,47 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><em>required</em></td>
 </tr>
 <tr class="odd">
-<td>model</td>
-<td><a href="`pyssed.model.Model`">Model</a></td>
-<td>(Optional) The model class used to estimated the outcome models. This is only relevant when using covariate adjustment. Please see pyssed.model.Model for more details.</td>
-<td><code>None</code></td>
+<td>decay</td>
+<td><a href="`typing.Callable`">Callable</a>[[<a href="`int`">int</a>], <a href="`float`">float</a>]</td>
+<td><code>decay()</code> should intake the current time step t and output a value in [0, 1] where 1 represents no decay and 0 represents complete decay. This function is similar to the <code>delta()</code> argument above. However, <code>delta()</code> determines the amount of random exploration in the MAD algorithm at time t. In contrast, <code>decay()</code> is a time-decreasing function that determines how quickly the bandit assignment probabilities for arm k decay to 0 once arm k’s ATE (ATE_k) is statistically significant. Setting a constant <code>decay = lambda _: 1</code> makes this method identical to the vanilla MAD design. In contrast, <code>decay = lambda _: 0</code> is the same as setting the bandit probabilities for arm k to 0 as soon as it has a significant ATE.</td>
+<td><code>lambda x: 1 / np.sqrt(x)</code></td>
 </tr>
 <tr class="even">
+<td>model</td>
+<td><a href="`pyssed.model.Model`">Model</a></td>
+<td>(Optional) The model class used to estimated the outcome models. This is only relevant when using covariate adjustment.</td>
+<td><code>None</code></td>
+</tr>
+<tr class="odd">
 <td>n_warmup</td>
 <td><a href="`int`">int</a></td>
 <td>The number of units (t) to collect before constructing CSs and estimating the outcome models. This is only relevant when using covariate adjustment.</td>
 <td><code>1</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>pooled</td>
 <td><a href="`bool`">bool</a></td>
 <td>Whether the outcome models should be estimated separately for each treatment arm or if a single, pooled model should be estimated. This is only relevant when using covariate adjustment.</td>
 <td><code>True</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes" class="level2 doc-section doc-section-attributes">
+<h2 class="doc-section doc-section-attributes anchored" data-anchor-id="attributes">Attributes</h2>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>_weights</td>
+<td><a href="`Dict`">Dict</a>[<a href="`int`">int</a>, <a href="`float`">float</a>]</td>
+<td>These weights are calculated by <code>decay()</code>. Each arm has a weight. When an arm has a weight of 1, its bandit assignment probabilities are not adjusted. Once an arm is statistically significant, its weight begins to decay towards 0, and so does its bandit assignment probabilities. As an arm’s weight decays, it “shifts” its probability onto currently under-powered arms. This iterative procedure continues to focus more sample on under-powered arms until either all arms have significant ATEs or the experiment has ended.</td>
 </tr>
 </tbody>
 </table>
@@ -228,50 +263,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#pyssed.MAD.pull">pull</a></td>
-<td>Perform one full iteration of the MAD algorithm.</td>
+<td><a href="#pyssed.MADMod.pull">pull</a></td>
+<td>Perform one full iteration of the modified MAD algorithm</td>
 </tr>
 </tbody>
 </table>
-<section id="pyssed.MAD.pull" class="level3">
-<h3 class="anchored" data-anchor-id="pyssed.MAD.pull">pull</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MAD.pull(early_stopping<span class="op">=</span><span class="va">True</span>, cs_precision<span class="op">=</span><span class="fl">0.1</span>, mc_adjust<span class="op">=</span><span class="st">'Bonferroni'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Perform one full iteration of the MAD algorithm.</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>early_stopping</td>
-<td><a href="`bool`">bool</a></td>
-<td>Whether or not to stop the experiment early when all the arms have statistically significant ATEs.</td>
-<td><code>True</code></td>
-</tr>
-<tr class="even">
-<td>cs_precision</td>
-<td><a href="`float`">float</a></td>
-<td>This parameter controls how precise we want to make our Confidence Sequences (CSs). If <code>cs_precision = 0</code> then the experiment will stop immediately as soon as all arms are statistically significant. If <code>cs_precision = 0.2</code> then the experiment will run until all CSs are at least 20% tighter (shorter) than they were when they became statistically significant. If <code>cs_precision = 0.4</code> the experiment will run until all CSs are at least 40% tighter, and so on.</td>
-<td><code>0.1</code></td>
-</tr>
-<tr class="odd">
-<td>mc_adjust</td>
-<td><a href="`str`">str</a></td>
-<td>The type of multiple comparison correction to apply to the constructed CSs. Default is “Bonferroni” (currently “Bonferroni” or None are the only supported options).</td>
-<td><code>'Bonferroni'</code></td>
-</tr>
-</tbody>
-</table>
+<section id="pyssed.MADMod.pull" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADMod.pull">pull</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MADMod.pull(early_stopping<span class="op">=</span><span class="va">True</span>, cs_precision<span class="op">=</span><span class="fl">0.1</span>, mc_adjust<span class="op">=</span><span class="st">'Bonferroni'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Perform one full iteration of the modified MAD algorithm</p>
 
 
-</section>
 </section>
 </section>
 </section>

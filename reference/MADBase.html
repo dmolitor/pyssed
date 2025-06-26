@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>mad – pyssed</title>
+<title>madbase – pyssed</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -152,71 +152,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<section id="pyssed.MAD" class="level1">
-<h1>MAD</h1>
-<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MAD(<span class="va">self</span>, bandit, alpha, delta, t_star, model<span class="op">=</span><span class="va">None</span>, n_warmup<span class="op">=</span><span class="dv">1</span>, pooled<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>A class implementing the Mixture-Adaptive Design (MAD; Liang and Bojinov, 2024) both with or without covariate adjustment (MADCovar; Molitor and Gold, 2025).</p>
-<section id="parameters" class="level2 doc-section doc-section-parameters">
-<h2 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h2>
-<table class="caption-top table">
-<thead>
-<tr class="header">
-<th>Name</th>
-<th>Type</th>
-<th>Description</th>
-<th>Default</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td>bandit</td>
-<td><a href="`pyssed`">pyssed</a>.<a href="`pyssed.Bandit`">Bandit</a></td>
-<td>This object must implement several crucial methods/attributes. For more details on how to create a custom Bandit object, see the documentation of the Bandit class.</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>alpha</td>
-<td><a href="`float`">float</a></td>
-<td>The size of the statistical test (testing for non-zero treatment effects)</td>
-<td><em>required</em></td>
-</tr>
-<tr class="odd">
-<td>delta</td>
-<td><a href="`typing.Callable`">Callable</a>[[<a href="`int`">int</a>], <a href="`float`">float</a>]</td>
-<td>A function that generates the real-valued sequence delta_t in Liang and Bojinov (Definition 4 - Mixture Adaptive Design). This sequence should converge to 0 slower than 1/t^(1/4) where t denotes the time frame in {0, … n}. This function should intake an integer (t) and output a float (the corresponding delta_t)</td>
-<td><em>required</em></td>
-</tr>
-<tr class="even">
-<td>t_star</td>
-<td><a href="`int`">int</a></td>
-<td>The time-step at which we want to optimize the CSs to be tightest. E.g. Liang and Bojinov set this to the max horizon of their experiment.</td>
-<td><em>required</em></td>
-</tr>
-<tr class="odd">
-<td>model</td>
-<td><a href="`pyssed.model.Model`">Model</a></td>
-<td>(Optional) The model class used to estimated the outcome models. This is only relevant when using covariate adjustment. Please see pyssed.model.Model for more details.</td>
-<td><code>None</code></td>
-</tr>
-<tr class="even">
-<td>n_warmup</td>
-<td><a href="`int`">int</a></td>
-<td>The number of units (t) to collect before constructing CSs and estimating the outcome models. This is only relevant when using covariate adjustment.</td>
-<td><code>1</code></td>
-</tr>
-<tr class="odd">
-<td>pooled</td>
-<td><a href="`bool`">bool</a></td>
-<td>Whether the outcome models should be estimated separately for each treatment arm or if a single, pooled model should be estimated. This is only relevant when using covariate adjustment.</td>
-<td><code>True</code></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="notes" class="level2 doc-section doc-section-notes">
-<h2 class="doc-section doc-section-notes anchored" data-anchor-id="notes">Notes</h2>
-<p>See the documentation for <code>pyssed.mad.MADBase</code> for details on the majority of the provided methods.</p>
-</section>
+<section id="pyssed.MADBase" class="level1">
+<h1>MADBase</h1>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MADBase(<span class="va">self</span>, bandit, alpha, delta, t_star, model<span class="op">=</span><span class="va">None</span>, n_warmup<span class="op">=</span><span class="dv">1</span>, pooled<span class="op">=</span><span class="va">True</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Base class that includes methods for both the <code>pyssed.MAD</code> and <code>pyssed.MADMod</code> classes.</p>
 <section id="methods" class="level2">
 <h2 class="anchored" data-anchor-id="methods">Methods</h2>
 <table class="caption-top table">
@@ -228,17 +167,79 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td><a href="#pyssed.MAD.pull">pull</a></td>
-<td>Perform one full iteration of the MAD algorithm.</td>
+<td><a href="#pyssed.MADBase.estimates">estimates</a></td>
+<td>Extract estimated ATEs and confidence sequences.</td>
+</tr>
+<tr class="even">
+<td><a href="#pyssed.MADBase.fit">fit</a></td>
+<td>Fit the MAD algorithm for the full time horizon.</td>
+</tr>
+<tr class="odd">
+<td><a href="#pyssed.MADBase.plot_ate">plot_ate</a></td>
+<td>Plot the ATE and CSs for each arm at the current time step.</td>
+</tr>
+<tr class="even">
+<td><a href="#pyssed.MADBase.plot_ate_path">plot_ate_path</a></td>
+<td>Plot the ATE and CS paths for each arm of the experiment.</td>
+</tr>
+<tr class="odd">
+<td><a href="#pyssed.MADBase.plot_ites">plot_ites</a></td>
+<td>Plot the estimated individual treatment effects (ITEs).</td>
+</tr>
+<tr class="even">
+<td><a href="#pyssed.MADBase.plot_n">plot_n</a></td>
+<td>Plot the total N assigned to each arm.</td>
+</tr>
+<tr class="odd">
+<td><a href="#pyssed.MADBase.plot_probabilities">plot_probabilities</a></td>
+<td>Plot the arm assignment probabilities across time.</td>
+</tr>
+<tr class="even">
+<td><a href="#pyssed.MADBase.plot_sample">plot_sample</a></td>
+<td>Plot sample assignment to arms across time</td>
+</tr>
+<tr class="odd">
+<td><a href="#pyssed.MADBase.summary">summary</a></td>
+<td>Print a summary of ATEs and confidence bands.</td>
 </tr>
 </tbody>
 </table>
-<section id="pyssed.MAD.pull" class="level3">
-<h3 class="anchored" data-anchor-id="pyssed.MAD.pull">pull</h3>
-<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MAD.pull(early_stopping<span class="op">=</span><span class="va">True</span>, cs_precision<span class="op">=</span><span class="fl">0.1</span>, mc_adjust<span class="op">=</span><span class="st">'Bonferroni'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<p>Perform one full iteration of the MAD algorithm.</p>
-<section id="parameters-1" class="level4 doc-section doc-section-parameters">
-<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<section id="pyssed.MADBase.estimates" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.estimates">estimates</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>MADBase.estimates()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Extract estimated ATEs and confidence sequences.</p>
+<section id="returns" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td><a href="`pandas`">pandas</a>.<a href="`pandas.DataFrame`">DataFrame</a></td>
+<td>A dataframe of ATE estimates and corresponding CS lower and upper bounds.</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.fit" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.fit">fit</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>MADBase.fit(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    early_stopping<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    cs_precision<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    mc_adjust<span class="op">=</span><span class="st">'Bonferroni'</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    verbose<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">**</span>kwargs,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Fit the MAD algorithm for the full time horizon.</p>
+<section id="parameters" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters">Parameters</h4>
 <table class="caption-top table">
 <thead>
 <tr class="header">
@@ -266,6 +267,219 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><a href="`str`">str</a></td>
 <td>The type of multiple comparison correction to apply to the constructed CSs. Default is “Bonferroni” (currently “Bonferroni” or None are the only supported options).</td>
 <td><code>'Bonferroni'</code></td>
+</tr>
+<tr class="even">
+<td>verbose</td>
+<td><a href="`bool`">bool</a></td>
+<td>Whether to print progress of the algorithm</td>
+<td><code>True</code></td>
+</tr>
+<tr class="odd">
+<td>**kwargs</td>
+<td><a href="`typing.Any`">Any</a></td>
+<td>Keyword arguments to pass directly to the <code>self.pull</code> method. For more details see the documentation for that method.</td>
+<td><code>{}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="returns-1" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-1">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>None</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.plot_ate" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.plot_ate">plot_ate</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>MADBase.plot_ate()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Plot the ATE and CSs for each arm at the current time step.</p>
+<section id="returns-2" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-2">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td><a href="`plotnine`">plotnine</a>.<a href="`plotnine.ggplot`">ggplot</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.plot_ate_path" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.plot_ate_path">plot_ate_path</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>MADBase.plot_ate_path()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Plot the ATE and CS paths for each arm of the experiment.</p>
+<section id="returns-3" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-3">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td><a href="`plotnine`">plotnine</a>.<a href="`plotnine.ggplot`">ggplot</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.plot_ites" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.plot_ites">plot_ites</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>MADBase.plot_ites(arm, <span class="bu">type</span><span class="op">=</span><span class="st">'boxplot'</span>, <span class="op">**</span>kwargs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Plot the estimated individual treatment effects (ITEs).</p>
+<section id="parameters-1" class="level4 doc-section doc-section-parameters">
+<h4 class="doc-section doc-section-parameters anchored" data-anchor-id="parameters-1">Parameters</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+<th>Default</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>arm</td>
+<td><a href="`int`">int</a></td>
+<td>The index of the arm for which to plot ITE estimates.</td>
+<td><em>required</em></td>
+</tr>
+<tr class="even">
+<td>type</td>
+<td><a href="`str`">str</a></td>
+<td>The type of plot. Must be one of ‘boxplot’, ‘density’, or ‘histogram’.</td>
+<td><code>'boxplot'</code></td>
+</tr>
+<tr class="odd">
+<td>**kwargs</td>
+<td></td>
+<td>Keyword arguments to pass directly to the <code>geom_{plot_type}()</code> call.</td>
+<td><code>{}</code></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.plot_n" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.plot_n">plot_n</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>MADBase.plot_n()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Plot the total N assigned to each arm.</p>
+<section id="returns-4" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-4">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td><a href="`plotnine`">plotnine</a>.<a href="`plotnine.ggplot`">ggplot</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.plot_probabilities" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.plot_probabilities">plot_probabilities</h3>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>MADBase.plot_probabilities()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Plot the arm assignment probabilities across time.</p>
+<section id="returns-5" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-5">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td><a href="`plotnine`">plotnine</a>.<a href="`plotnine.ggplot`">ggplot</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.plot_sample" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.plot_sample">plot_sample</h3>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>MADBase.plot_sample()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Plot sample assignment to arms across time</p>
+<section id="returns-6" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-6">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td><a href="`plotnine`">plotnine</a>.<a href="`plotnine.ggplot`">ggplot</a></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="pyssed.MADBase.summary" class="level3">
+<h3 class="anchored" data-anchor-id="pyssed.MADBase.summary">summary</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>MADBase.summary()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Print a summary of ATEs and confidence bands.</p>
+<section id="returns-7" class="level4 doc-section doc-section-returns">
+<h4 class="doc-section doc-section-returns anchored" data-anchor-id="returns-7">Returns</h4>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td></td>
+<td>None</td>
+<td></td>
 </tr>
 </tbody>
 </table>
