@@ -12,17 +12,7 @@ editor: source
 
 <!-- badges: end -->
 
-```{=html}
-<!-- 
-The goal of pyssed is to provide methods for anytime-valid inference on the average treatment effect (ATE)
-in adaptive experiments. pyssed implements the Mixture Adaptive Design (MAD) ([Liang and Bojinov, 2024][1]) which provides asymptotic confidence sequences for the ATE in arbitrary adaptive experimental designs and extensions to MAD ([Molitor and Gold, 2025][2]) which implement covariate-adjusted ATE estimation and dynamic sample balancing to improve precision and statistical power
-
----
-[1]: Liang, B. and Bojinov, I. (2024). An Experimental Design for Anytime-Valid Causal Inference on Multi-Armed Bandits. arXiv:2311.05794.
-
-[2]: Molitor, D. and Gold, S. (2025). Anytime-Valid Inference in Adaptive Experiments: Covariate Adjustment and Balanced Power. arXiv:2506.20523. -->
-```
-
+:::{style="text-align: justify;"}
 pyssed implements methods for anytime-valid inference on average treatment effects (ATEs) in adaptive experiments. It implements the Mixture Adaptive Design (MAD) ([Liang and Bojinov, 2024](#ref1)), which delivers asymptotic confidence sequences for ATEs under arbitrary adaptive designs, along with extensions ([Molitor and Gold, 2025](#ref2)) that add covariate-adjusted estimation and dynamic sample balancing to enhance precision and statistical power.
 
 ## Installation
@@ -41,11 +31,154 @@ pip install git+https://github.com/dmolitor/pyssed
 
 ## Example
 
-We’ll simulate a simple binary experiment ($w \in \{0, 1\}$) using Thompson Sampling (TS)
-as the bandit algorithm. We’ll demonstrate how covariate-adjusted MAD enables precise,
-unbiased ATE estimation.
+We’ll simulate a simple binary experiment ($w \in \{0, 1\}$)  and demonstrate how MAD enables unbiased ATE estimation and how
+covariate-adjusted MAD (MADCovar) can provide significant improvements in precision.
 
-------------------------------------------------------------------------
+Individual-level potential outcomes are generated as i.i.d draws from $Y_i(w) \sim \text{Bernoulli}(\mu_i(w))$ with $$\mu_i(w) = 0.35 + \mathbf{1}\{W_i=w\}0.2 + 0.3 X_{1,i} + 0.1 X_{2,i} - 0.2 X_{3,i},$$ where $X_{1,i},X_{2,i},X_{3,i}\sim\text{Bernoulli}(0.6), \text{Bernoulli}(0.5), \text{ and } \text{Bernoulli}(0.7)$, respectively. This results in ATE $=0.2$.
+
+We'll first spin up a reward function that will generate individual-level
+potential outcomes and covariates drawn from this data-generating process.
+We will have one reward function that records the covariates and one that ignores
+the covariates.
+
+```{python}
+import numpy as np
+import pandas as pd
+import plotnine as pn
+from pyssed.bandit import Reward, TSBernoulli
+from pyssed.model import FastOLSModel
+from pyssed import MAD
+
+generator = np.random.default_rng(seed=123)
+
+def reward_covariates(arm: int):
+    ate = {0: 0., 1: 0.2}
+    X1 = np.random.binomial(1, 0.6)
+    X2 = np.random.binomial(1, 0.5)
+    X3 = np.random.binomial(1, 0.7)
+    ate = ate[arm]
+    mean = 0.35 + ate + 0.3 * X1 + 0.1 * X2 - 0.2 * X3
+    Y_i = generator.binomial(n=1, p=mean)
+    X_df = pd.DataFrame({"X_1": [X1], "X_2": [X2], "X_3": [X3]})
+    return Reward(outcome=float(Y_i), covariates=X_df)
+
+def reward_no_covariates(arm: int):
+    return Reward(outcome=reward_covariates(arm=arm).outcome)
+```
+
+```{python}
+#| echo: false
+#| output: false
+pn.options.dpi = 125
+pn.options.figure_size = (7, 4)
+```
+
+Next, we will run MAD both with and without covariates. We will
+see that both approaches give us valid inference, but that, unsurprisingly, including covariates gives us improvements in the precision. We set Thompson Sampling as the underlying adaptive assignment algorithm, a quickly-decaying sequence $\delta_t = \frac{1}{t^{1/0.24}}$, and (for MADCovar) a linear probability model for the outcome models fit on $\{X_{1, i}, X_{2, i}, X_{3, i}\}$. Finally, we simulate MAD and MADCovar for 2,000 units and calculate the corresponding ATE estimates and 95\% CSs.
+
+First, we will run our experiment with MADCovar:
+```{python}
+mad_covariates = MAD(
+    bandit=TSBernoulli(k=2, control=0, reward=reward_covariates),
+    alpha=0.05,
+    delta=lambda x: 1./(x**0.24),
+    t_star=int(2e3),
+    model=FastOLSModel,
+    pooled=True
+)
+mad_covariates.fit(
+    verbose=False,
+    early_stopping=False,
+    mc_adjust=None
+)
+```
+
+and then repeat the experiment with MAD:
+```{python}
+mad_no_covariates = MAD(
+    bandit=TSBernoulli(k=2, control=0, reward=reward_no_covariates),
+    alpha=0.05,
+    delta=lambda x: 1./(x**0.24),
+    t_star=int(2e3)
+)
+mad_no_covariates.fit(verbose=False, early_stopping=False, mc_adjust=None)
+```
+
+Now, we can compare the precision of the 95\% CSs for both methods.
+
+```{python}
+#| echo: false
+#| warning: false
+#| error: false
+#| fig-height: 6
+#| fig-width: 10
+
+def theme_daniel():
+    return (
+        pn.theme_light()
+        + pn.theme(
+            legend_key=pn.element_blank(),
+            panel_border=pn.element_blank(),
+            strip_background=pn.element_rect(fill="white", color="white"),
+            strip_text=pn.element_text(color="black")
+        )
+    )
+
+estimates = []
+for which, mad_alg in enumerate([mad_no_covariates, mad_covariates]):
+    ates = mad_alg._ate[1]
+    radii = mad_alg._cs_radius[1]
+    ubs = np.nan_to_num([x + y for (x, y) in zip(ates, radii)], nan=np.inf)
+    lbs = np.nan_to_num([x - y for (x, y) in zip(ates, radii)], nan=-np.inf)
+    estimates_df = pd.DataFrame({
+        "ate": ates,
+        "lb": lbs,
+        "ub": ubs,
+        "t": range(1, len(ates) + 1),
+        "which": which
+    })
+    estimates.append(estimates_df)
+estimates = (
+    pd
+    .concat(estimates)
+    .assign(
+        which=lambda df: (
+            df["which"]
+            .apply(lambda x: "MAD" if x == 0 else "MADCovar")
+        )
+    )
+)
+
+(
+    pn.ggplot(
+        data=estimates,
+        mapping=pn.aes(
+            x="t",
+            y="ate",
+            ymin="lb",
+            ymax="ub",
+            color="which",
+            fill="which"
+        )
+    )
+    + pn.geom_line()
+    + pn.geom_hline(yintercept=0.2, linetype="dashed")
+    + pn.geom_linerange(alpha=0.05)
+    + pn.coord_cartesian(ylim=(-0.8, 1.2))
+    + theme_daniel()
+    + pn.labs(
+        y="ATE",
+        color="",
+        fill=""
+    )
+)
+```
+
+We see that, as expected, including covariates improves our precision across the entire sample horizon.
+
+For further details and examples, please check out the remainder of our documentation!
+:::
+---
 
 <a id="ref1"></a> \[1\] Liang, B. and Bojinov, I. (2024). An Experimental Design for Anytime-Valid Causal Inference on Multi-Armed Bandits. arXiv:2311.05794.
 
