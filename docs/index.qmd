@@ -4,7 +4,7 @@ toc: false
 editor: source
 ---
 
-# pyssed <a href='https://www.dmolitor.com/pyssed'><img src="pyssed.png" align="right" height="139"/></a>
+# pyssed <a href='https://www.dmolitor.com/pyssed'><img src="media/pyssed.png" align="right" height="139"/></a>
 
 <!-- badges: start -->
 
@@ -42,6 +42,7 @@ We will have one reward function that records the covariates and one that ignore
 the covariates.
 
 ```{python}
+#| eval: false
 import numpy as np
 import pandas as pd
 import plotnine as pn
@@ -69,6 +70,7 @@ def reward_no_covariates(arm: int):
 ```{python}
 #| echo: false
 #| output: false
+#| eval: false
 pn.options.dpi = 125
 pn.options.figure_size = (6, 4)
 ```
@@ -78,6 +80,7 @@ see that both approaches give us valid inference, but that, unsurprisingly, incl
 
 First, we will run our experiment with MADCovar:
 ```{python}
+#| eval: false
 mad_covariates = MAD(
     bandit=TSBernoulli(k=2, control=0, reward=reward_covariates),
     alpha=0.05,
@@ -95,6 +98,7 @@ mad_covariates.fit(
 
 and then repeat the experiment with MAD:
 ```{python}
+#| eval: false
 mad_no_covariates = MAD(
     bandit=TSBernoulli(k=2, control=0, reward=reward_no_covariates),
     alpha=0.05,
@@ -112,6 +116,7 @@ Now, we can compare the precision of the 95\% CSs for both methods.
 #| error: false
 #| fig-height: 6
 #| fig-width: 10
+#| eval: false
 
 def theme_daniel():
     return (
@@ -173,6 +178,8 @@ estimates = (
     )
 )
 ```
+
+![](media/index_example.png)
 
 We see that, as expected, including covariates improves our precision across the entire sample horizon.
 

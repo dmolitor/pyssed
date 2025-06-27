@@ -9,7 +9,7 @@ website:
   title: "pyssed"
   description: "The Mixture Adaptive Design (MAD): An experimental design for anytime-valid causal inference on Multi-Armed Bandits."
   page-navigation: true
-  favicon: "favicon.ico"
+  favicon: "media/favicon.ico"
   page-footer:
     center: |
       Built by [Daniel Molitor](https://dmolitor.com)
