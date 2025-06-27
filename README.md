@@ -1,5 +1,5 @@
 # pyssed
-<a href='https://www.dmolitor.com/pyssed'><img src='docs/pyssed.png' align="right" height="160" /></a>
+<a href='https://www.dmolitor.com/pyssed'><img src='docs/media/pyssed.png' align="right" height="160" /></a>
 
 
 <!-- This document is rendered from README.qmd; Edit that file instead! -->
